@@ -1,0 +1,120 @@
+/* App Layout */
+.app-container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: var(--space-md) var(--space-md) var(--space-2xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  min-height: 100vh;
+}
+
+/* Header & Top Bar */
+.app-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--underline-dim);
+}
+
+.app-header__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.app-header__brand {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+}
+
+.app-header__title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  text-transform: lowercase;
+}
+
+.app-header__subtitle {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.app-header__global-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+/* Navigation / Tabs Bar */
+.tabs-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  overflow-x: auto;
+  padding-bottom: var(--space-2xs);
+  scrollbar-width: thin;
+}
+
+.tabs-nav::-webkit-scrollbar {
+  height: 3px;
+}
+
+.tabs-nav::-webkit-scrollbar-thumb {
+  background-color: var(--underline-dim);
+}
+
+/* Main Content Area */
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* Footer & Help Hints */
+.app-footer {
+  margin-top: auto;
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--underline-dim);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.app-footer__shortcuts {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.app-footer kbd {
+  font-family: var(--font-family-mono);
+  font-size: 0.8em;
+  padding: 0.1em 0.35em;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-bottom: 1px solid var(--underline-color);
+  border-radius: 2px;
+}
+
+@media (min-width: 640px) {
+  .app-container {
+    padding: var(--space-xl) var(--space-lg) var(--space-2xl);
+  }
+
+  .app-header {
+    gap: var(--space-md);
+  }
+}

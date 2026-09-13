@@ -1,0 +1,43 @@
+:root {
+  /* Color Palette */
+  --bg-primary: #DADAD9;
+  --bg-surface: rgba(255, 255, 255, 0.45);
+  --bg-surface-hover: rgba(255, 255, 255, 0.7);
+  --text-primary: #465362;
+  --text-muted: rgba(70, 83, 98, 0.7);
+  --underline-color: #465362;
+  --underline-dim: rgba(70, 83, 98, 0.35);
+  --accent-color: #C57B57;
+  --accent-hover: #b06945;
+  --accent-light: rgba(197, 123, 87, 0.12);
+  --danger-color: #9e433c;
+  --danger-hover: #82332c;
+
+  /* Typography */
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --font-size-xs: 0.75rem;   /* 12px */
+  --font-size-sm: 0.875rem;  /* 14px */
+  --font-size-base: 1rem;    /* 16px */
+  --font-size-lg: 1.125rem;  /* 18px */
+  --font-size-xl: 1.25rem;   /* 20px */
+  --font-size-2xl: 1.5rem;   /* 24px */
+
+  /* Spacing */
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+
+  /* Layout */
+  --container-max-width: 960px;
+  --border-radius-sm: 3px;
+  --border-radius-md: 6px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+}

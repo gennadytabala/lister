@@ -1,0 +1,417 @@
+/* Buttons & Text Links */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2xs);
+  padding: var(--space-2xs) var(--space-xs);
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  border-bottom: 1px solid transparent;
+  transition: color var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast);
+  white-space: nowrap;
+  user-select: none;
+  border-radius: var(--border-radius-sm);
+}
+
+.btn:hover {
+  color: var(--accent-color);
+  border-bottom-color: var(--accent-color);
+  background-color: var(--accent-light);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.btn--accent {
+  color: var(--accent-color);
+  font-weight: 600;
+  border-bottom: 1px solid var(--accent-color);
+}
+
+.btn--accent:hover {
+  color: var(--accent-hover);
+  border-bottom-color: var(--accent-hover);
+}
+
+.btn--danger {
+  color: var(--danger-color);
+}
+
+.btn--danger:hover {
+  color: var(--danger-hover);
+  border-bottom-color: var(--danger-hover);
+  background-color: rgba(158, 67, 60, 0.08);
+}
+
+.btn--icon-text {
+  padding: 2px var(--space-xs);
+  font-size: var(--font-size-xs);
+}
+
+/* Tabs for List Switcher */
+.tabs-list {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  flex-wrap: nowrap;
+}
+
+.tab-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  background: transparent;
+  max-width: 180px;
+}
+
+.tab-item:hover {
+  color: var(--text-primary);
+  border-bottom-color: var(--underline-dim);
+}
+
+.tab-item--active {
+  color: var(--accent-color);
+  font-weight: 600;
+  border-bottom: 2px solid var(--accent-color);
+}
+
+.tab-item__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* List Container */
+.list-view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  background: transparent;
+}
+
+/* List Header */
+.list-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px dashed var(--underline-dim);
+}
+
+.list-header__main-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.list-header__title-wrapper {
+  flex: 1;
+  min-width: 200px;
+}
+
+.list-header__title-input {
+  width: 100%;
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--underline-color);
+  padding: var(--space-2xs) 0;
+  transition: border-color var(--transition-fast);
+}
+
+.list-header__title-input:focus {
+  border-bottom-color: var(--accent-color);
+}
+
+.list-header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+/* Aggregated Totals Bar */
+.totals-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-xs) var(--space-sm);
+  background-color: var(--bg-surface);
+  border-radius: var(--border-radius-sm);
+  border-bottom: 1px solid var(--underline-dim);
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  width: fit-content;
+}
+
+.totals-bar__item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2xs);
+}
+
+.totals-bar__label {
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.totals-bar__value {
+  font-family: var(--font-family-mono);
+  font-weight: 700;
+  color: var(--accent-color);
+}
+
+/* Items List */
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+/* Individual List Item */
+.list-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-2xs) 0;
+  transition: background-color var(--transition-fast);
+}
+
+.list-item:hover > .list-item__row {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.list-item__row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  padding: var(--space-2xs) var(--space-xs);
+  border-radius: var(--border-radius-sm);
+}
+
+.list-item__marker {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  user-select: none;
+  min-width: 14px;
+  text-align: center;
+}
+
+.list-item__content-field {
+  flex: 2;
+  min-width: 160px;
+}
+
+.list-item__price-field,
+.list-item__time-field {
+  flex: 0 1 90px;
+  min-width: 75px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.list-item__field-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  user-select: none;
+}
+
+/* Underlined Text Inputs - Pure Text Style */
+.input-underlined {
+  width: 100%;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--underline-color);
+  padding: 4px 2px;
+  font-size: var(--font-size-base);
+  transition: border-bottom-color var(--transition-fast), background-color var(--transition-fast);
+  background-color: transparent;
+}
+
+.input-underlined:hover {
+  border-bottom-color: var(--accent-color);
+}
+
+.input-underlined:focus {
+  border-bottom: 1.5px solid var(--accent-color);
+  background-color: rgba(255, 255, 255, 0.35);
+}
+
+.input-underlined::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.input-underlined--number {
+  font-family: var(--font-family-mono);
+  text-align: right;
+  -moz-appearance: textfield;
+}
+
+.input-underlined--number::-webkit-inner-spin-button,
+.input-underlined--number::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Computed / Read-only Fields (When item has nested sublists) */
+.input-underlined--computed {
+  border-bottom-style: dashed;
+  cursor: not-allowed;
+  color: var(--accent-color);
+  font-weight: 600;
+  opacity: 0.9;
+  background-color: transparent !important;
+}
+
+.input-underlined--computed:focus {
+  border-bottom-color: var(--underline-color);
+}
+
+/* Action Buttons per item */
+.list-item__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  margin-left: auto;
+  opacity: 0.85;
+  transition: opacity var(--transition-fast);
+}
+
+.list-item:hover .list-item__actions {
+  opacity: 1;
+}
+
+/* Nested Lists Container */
+.nested-container {
+  margin-left: var(--space-md);
+  padding-left: var(--space-sm);
+  border-left: 2px solid var(--underline-dim);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+  margin-bottom: var(--space-xs);
+}
+
+.nested-list-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  background-color: rgba(255, 255, 255, 0.15);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--border-radius-sm);
+}
+
+.nested-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  padding-bottom: var(--space-2xs);
+  border-bottom: 1px dotted var(--underline-dim);
+}
+
+.nested-list-header__title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+
+.nested-list-header__title::before {
+  content: "↳";
+  color: var(--accent-color);
+  font-size: 1.1em;
+}
+
+.nested-list-header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+/* Add Item Button at bottom of list */
+.list-add-row {
+  padding: var(--space-xs) 0;
+}
+
+/* Modal / File Input Helpers */
+.hidden-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: var(--space-xl) var(--space-md);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .list-item__row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-xs);
+    padding: var(--space-xs);
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .list-item__content-field {
+    width: 100%;
+  }
+
+  .list-item__price-field,
+  .list-item__time-field {
+    width: 48%;
+  }
+
+  .list-item__numbers-group {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-sm);
+  }
+
+  .list-item__actions {
+    margin-left: 0;
+    justify-content: flex-end;
+    width: 100%;
+    border-top: 1px dotted var(--underline-dim);
+    padding-top: var(--space-2xs);
+  }
+
+  .nested-container {
+    margin-left: var(--space-xs);
+    padding-left: var(--space-xs);
+  }
+
+  .totals-bar {
+    width: 100%;
+    justify-content: space-around;
+  }
+}

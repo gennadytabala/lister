@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Lister — швидкий та мінімалістичний інструмент для створення списків з підрахунком цін, часу та вкладеними підсписками." />
+  <title>Lister — Мінімалістичний менеджер списків</title>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="styles/variables.css" />
+  <link rel="stylesheet" href="styles/reset.css" />
+  <link rel="stylesheet" href="styles/layout.css" />
+  <link rel="stylesheet" href="styles/components.css" />
+</head>
+<body>
+  <div id="app" class="app-container">
+    <!-- Application Header -->
+    <header class="app-header">
+      <div class="app-header__top">
+        <div class="app-header__brand">
+          <h1 class="app-header__title">lister</h1>
+          <span class="app-header__subtitle">мінімалістичні списки</span>
+        </div>
+
+        <div class="app-header__global-actions">
+          <button type="button" id="btn-create-list" class="btn btn--accent" title="Створити новий список">
+            + список
+          </button>
+          <button type="button" id="btn-export-json" class="btn" title="Експортувати активний список у JSON">
+            експорт
+          </button>
+          <button type="button" id="btn-import-json" class="btn" title="Завантажити список із JSON файлу">
+            імпорт
+          </button>
+          <input type="file" id="file-import-input" class="hidden-file-input" accept=".json" aria-label="Завантажити JSON файл" />
+        </div>
+      </div>
+
+      <!-- Lists Navigation Tabs -->
+      <nav class="tabs-nav js-tabs-container" aria-label="Вкладки списків">
+        <!-- Generated dynamically via JS -->
+      </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="app-main js-active-list-view">
+      <!-- Active list contents rendered dynamically via JS -->
+    </main>
+
+    <!-- Application Footer / Shortcuts -->
+    <footer class="app-footer">
+      <div class="app-footer__shortcuts">
+        <span><kbd>Enter</kbd> — новий рядок</span>
+        <span><kbd>Ctrl+Enter</kbd> — вкладений список</span>
+      </div>
+      <div class="app-footer__status">
+        <span>Зберігається автоматично у браузері</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Main JavaScript Module -->
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
