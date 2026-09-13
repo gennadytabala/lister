@@ -1,8 +1,8 @@
 :root {
   /* Color Palette */
-  --bg-primary: #DADAD9;
-  --bg-surface: rgba(255, 255, 255, 0.45);
-  --bg-surface-hover: rgba(255, 255, 255, 0.7);
+  --bg-primary: #E7E7E6;
+  --bg-surface: rgba(255, 255, 255, 0.55);
+  --bg-surface-hover: rgba(255, 255, 255, 0.85);
   --text-primary: #465362;
   --text-muted: rgba(70, 83, 98, 0.7);
   --underline-color: #465362;
