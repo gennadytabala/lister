@@ -18,7 +18,7 @@ global.localStorage = {
 const state = new AppState();
 const initialList = state.getActiveList();
 assert.ok(initialList, 'Initial list should exist');
-assert.strictEqual(initialList.title, 'Новий список');
+assert.strictEqual(initialList.title, '', 'Default list title is empty (placeholder shown instead)');
 assert.strictEqual(initialList.items.length, 1, 'Should have 1 item initially');
 assert.strictEqual(initialList.items[0].content, '');
 assert.strictEqual(initialList.items[0].price, 0);

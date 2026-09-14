@@ -5,6 +5,7 @@ import { AppState } from './state.js';
 import { UIRenderer } from './render.js';
 import { exportListAsJson, readJsonFile } from './storage.js';
 import { parseNumber } from './utils.js';
+import { initThemeToggle } from './theme.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const root = document.getElementById('app');
@@ -28,6 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initial Full Render
   renderer.renderFull();
+
+  // Initialise theme toggle (light / dark / system)
+  initThemeToggle('btn-theme');
 
   // Ensure initial cursor focus is in content field of the first item
   const activeList = state.getActiveList();

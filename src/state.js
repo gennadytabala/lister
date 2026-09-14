@@ -26,7 +26,7 @@ export class AppState {
         lists: [
           {
             id: initialListId,
-            title: 'Новий список',
+            title: '',
             items: [
               {
                 id: initialItemId,
@@ -72,12 +72,12 @@ export class AppState {
     }
   }
 
-  createList(title = 'Новий список') {
+  createList(title = '') {
     const newListId = generateId();
     const firstItemId = generateId();
     const newList = {
       id: newListId,
-      title: title.trim() || 'Новий список',
+      title: title.trim(),  // empty by default — placeholder shown instead
       items: [
         {
           id: firstItemId,
@@ -113,7 +113,7 @@ export class AppState {
       this.data.lists = [
         {
           id: freshListId,
-          title: 'Новий список',
+          title: '',
           items: [
             {
               id: freshItemId,

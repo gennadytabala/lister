@@ -1,29 +1,115 @@
-:root {
-  /* Color Palette */
-  --bg-primary: #E7E7E6;
-  --bg-surface: rgba(255, 255, 255, 0.55);
-  --bg-surface-hover: rgba(255, 255, 255, 0.85);
+/* ============================================================
+   LIGHT THEME (default)
+   ============================================================ */
+:root,
+[data-theme="light"] {
+  /* Background */
+  --bg-primary: #FFFCF9;
+  --bg-surface: rgba(70, 83, 98, 0.05);
+  --bg-surface-hover: rgba(70, 83, 98, 0.08);
+  --row-hover-bg: rgba(70, 83, 98, 0.06);
+  --nested-bg: rgba(70, 83, 98, 0.04);
+  --mobile-row-bg: rgba(70, 83, 98, 0.05);
+  --input-focus-bg: rgba(255, 255, 255, 0.85);
+  --kbd-bg: rgba(70, 83, 98, 0.08);
+
+  /* Text */
   --text-primary: #465362;
-  --text-muted: rgba(70, 83, 98, 0.7);
+  --text-muted: rgba(70, 83, 98, 0.6);
+
+  /* Borders & Underlines */
   --underline-color: #465362;
-  --underline-dim: rgba(70, 83, 98, 0.35);
+  --underline-dim: rgba(70, 83, 98, 0.25);
+
+  /* Accent */
   --accent-color: #C57B57;
   --accent-hover: #b06945;
   --accent-light: rgba(197, 123, 87, 0.12);
+
+  /* Danger */
   --danger-color: #9e433c;
   --danger-hover: #82332c;
+  --danger-bg: rgba(158, 67, 60, 0.08);
+}
 
-  /* Typography */
-  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+/* ============================================================
+   DARK THEME — Monokai-inspired
+   ============================================================ */
+[data-theme="dark"] {
+  /* Background */
+  --bg-primary: #272822;
+  --bg-surface: rgba(255, 255, 255, 0.04);
+  --bg-surface-hover: rgba(255, 255, 255, 0.07);
+  --row-hover-bg: rgba(255, 255, 255, 0.04);
+  --nested-bg: rgba(0, 0, 0, 0.18);
+  --mobile-row-bg: rgba(0, 0, 0, 0.15);
+  --input-focus-bg: rgba(255, 255, 255, 0.06);
+  --kbd-bg: rgba(255, 255, 255, 0.08);
+
+  /* Text */
+  --text-primary: #eaeae2;
+  --text-muted: #75715e;
+
+  /* Borders & Underlines */
+  --underline-color: #49483e;
+  --underline-dim: rgba(255, 255, 255, 0.1);
+
+  /* Accent — Monokai warm yellow */
+  --accent-color: #928d57;
+  --accent-hover: #d4c85c;
+  --accent-light: rgba(230, 219, 116, 0.1);
+
+  /* Danger — Monokai red */
+  --danger-color: #b25174;
+  --danger-hover: #e01560;
+  --danger-bg: rgba(249, 38, 114, 0.1);
+}
+
+/* ============================================================
+   SYSTEM THEME — follows OS preference
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    --bg-primary: #272822;
+    --bg-surface: rgba(255, 255, 255, 0.04);
+    --bg-surface-hover: rgba(255, 255, 255, 0.07);
+    --row-hover-bg: rgba(255, 255, 255, 0.04);
+    --nested-bg: rgba(0, 0, 0, 0.18);
+    --mobile-row-bg: rgba(0, 0, 0, 0.15);
+    --input-focus-bg: rgba(255, 255, 255, 0.06);
+    --kbd-bg: rgba(255, 255, 255, 0.08);
+    --text-primary: #f8f8f2;
+    --text-muted: #75715e;
+    --underline-color: #49483e;
+    --underline-dim: rgba(255, 255, 255, 0.1);
+    --accent-color: #e6db74;
+    --accent-hover: #d4c85c;
+    --accent-light: rgba(231, 223, 153, 0.1);
+    --danger-color: #f92672;
+    --danger-hover: #e01560;
+    --danger-bg: rgba(249, 38, 114, 0.1);
+  }
+}
+
+/* ============================================================
+   TYPOGRAPHY & SPACING — theme-independent
+   ============================================================ */
+:root {
+  --font-family-base: "Times New Roman", Times, serif;
   --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-  --font-size-xs: 0.75rem;   /* 12px */
-  --font-size-sm: 0.875rem;  /* 14px */
-  --font-size-base: 1rem;    /* 16px */
-  --font-size-lg: 1.125rem;  /* 18px */
-  --font-size-xl: 1.25rem;   /* 20px */
-  --font-size-2xl: 1.5rem;   /* 24px */
+  --font-size-xs: 0.75rem;
+  /* 12px */
+  --font-size-sm: 0.875rem;
+  /* 14px */
+  --font-size-base: 1rem;
+  /* 16px */
+  --font-size-lg: 1.125rem;
+  /* 18px */
+  --font-size-xl: 1.25rem;
+  /* 20px */
+  --font-size-2xl: 1.5rem;
+  /* 24px */
 
-  /* Spacing */
   --space-2xs: 0.25rem;
   --space-xs: 0.5rem;
   --space-sm: 0.75rem;
@@ -32,12 +118,10 @@
   --space-xl: 2rem;
   --space-2xl: 3rem;
 
-  /* Layout */
   --container-max-width: 960px;
   --border-radius-sm: 3px;
   --border-radius-md: 6px;
 
-  /* Transitions */
   --transition-fast: 0.15s ease;
   --transition-normal: 0.25s ease;
 }

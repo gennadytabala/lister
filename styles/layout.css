@@ -1,4 +1,11 @@
 /* App Layout */
+
+/* Smooth theme transitions */
+html {
+  color-scheme: light dark;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
 .app-container {
   width: 100%;
   max-width: var(--container-max-width);
@@ -104,7 +111,7 @@
   font-family: var(--font-family-mono);
   font-size: 0.8em;
   padding: 0.1em 0.35em;
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: var(--kbd-bg);
   border-bottom: 1px solid var(--underline-color);
   border-radius: 2px;
 }

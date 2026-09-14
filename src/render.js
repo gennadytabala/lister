@@ -111,7 +111,7 @@ export class UIRenderer {
                 type="text"
                 class="list-header__title-input js-list-title"
                 value="${this.escape(list.title || '')}"
-                placeholder="Назва списку..."
+                placeholder="Новий список..."
                 aria-label="Назва списку"
                 data-list-id="${list.id}"
               />
@@ -169,8 +169,9 @@ export class UIRenderer {
     const itemTotals = calculateItemTotals(item);
     const isComputed = itemTotals.isComputed;
 
-    const priceValue = isComputed ? formatNumber(itemTotals.price) : (item.price ?? 0);
-    const timeValue = isComputed ? formatNumber(itemTotals.time) : (item.time ?? 0);
+    // For non-computed fields: show empty string when value is 0 so the placeholder appears dimly
+    const priceValue = isComputed ? formatNumber(itemTotals.price) : (item.price || '');
+    const timeValue = isComputed ? formatNumber(itemTotals.time) : (item.time || '');
 
     const priceClass = isComputed ? 'input-underlined input-underlined--number input-underlined--computed' : 'input-underlined input-underlined--number';
     const timeClass = isComputed ? 'input-underlined input-underlined--number input-underlined--computed' : 'input-underlined input-underlined--number';
@@ -213,6 +214,7 @@ export class UIRenderer {
               step="any"
               class="${priceClass} js-item-price"
               value="${priceValue}"
+              placeholder="0"
               ${isComputed ? 'readonly' : ''}
               title="${priceTooltip}"
               aria-label="Ціна"
@@ -229,6 +231,7 @@ export class UIRenderer {
               step="any"
               class="${timeClass} js-item-time"
               value="${timeValue}"
+              placeholder="0"
               ${isComputed ? 'readonly' : ''}
               title="${timeTooltip}"
               aria-label="Час"

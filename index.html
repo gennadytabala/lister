@@ -6,6 +6,16 @@
   <meta name="description" content="Lister — швидкий та мінімалістичний інструмент для створення списків з підрахунком цін, часу та вкладеними підсписками." />
   <title>Lister — Мінімалістичний менеджер списків</title>
 
+  <!-- Apply saved theme immediately to prevent flash of wrong theme -->
+  <script>
+    (function () {
+      const saved = localStorage.getItem('lister_theme') || 'system';
+      if (saved === 'light' || saved === 'dark') {
+        document.documentElement.setAttribute('data-theme', saved);
+      }
+    })();
+  </script>
+
   <!-- Stylesheets -->
   <link rel="stylesheet" href="styles/variables.css" />
   <link rel="stylesheet" href="styles/reset.css" />
@@ -31,6 +41,9 @@
           </button>
           <button type="button" id="btn-import-json" class="btn" title="Завантажити список із JSON файлу">
             імпорт
+          </button>
+          <button type="button" id="btn-theme" class="btn btn--theme" title="Перемкнути тему" aria-label="Перемкнути тему">
+            ◑ system
           </button>
           <input type="file" id="file-import-input" class="hidden-file-input" accept=".json" aria-label="Завантажити JSON файл" />
         </div>
