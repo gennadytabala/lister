@@ -1,5 +1,5 @@
 /**
- * UI Renderer for Lister
+ * UI Renderer for Lister — Text-like Interface (Page of text with underlined editable words)
  */
 import { formatNumber } from './utils.js';
 import { calculateItemTotals, calculateListTotals, hasNestedLists } from './calculations.js';
@@ -46,7 +46,7 @@ export class UIRenderer {
   }
 
   /**
-   * Renders the top navigation tabs
+   * Renders the top navigation tabs as a textual index
    */
   renderTabs() {
     const tabsContainer = this.root.querySelector('.js-tabs-container');
@@ -55,8 +55,13 @@ export class UIRenderer {
     const { lists, activeListId } = this.state.data;
 
     let html = '<div class="tabs-list" role="tablist" aria-label="Списки">';
-    for (const list of lists) {
+    html += '<span class="tabs-label">Списки:</span>';
+    for (let i = 0; i < lists.length; i++) {
+      const list = lists[i];
       const isActive = list.id === activeListId;
+      if (i > 0) {
+        html += '<span class="sep" aria-hidden="true">·</span>';
+      }
       html += `
         <button
           type="button"
@@ -93,7 +98,7 @@ export class UIRenderer {
   }
 
   /**
-   * Renders the active list view (header, totals, items, nested lists)
+   * Renders the active list view (header, totals summary sentence, items, nested lists)
    */
   renderActiveListView(list) {
     const listView = this.root.querySelector('.js-active-list-view');
@@ -111,28 +116,23 @@ export class UIRenderer {
                 type="text"
                 class="list-header__title-input js-list-title"
                 value="${this.escape(list.title || '')}"
-                placeholder="Новий список..."
+                placeholder="Без назви..."
                 aria-label="Назва списку"
                 data-list-id="${list.id}"
               />
             </div>
             <div class="list-header__actions">
               <button type="button" class="btn btn--danger btn--icon-text js-btn-delete-list" data-list-id="${list.id}" title="Видалити цей список">
-                × видалити список
+                [× видалити список]
               </button>
             </div>
           </div>
 
-          <!-- Totals Bar -->
+          <!-- Totals Prose Sentence -->
           <div class="totals-bar js-list-totals">
-            <div class="totals-bar__item">
-              <span class="totals-bar__label">Разом ціна:</span>
-              <span class="totals-bar__value js-total-price">${formatNumber(totals.totalPrice)}</span>
-            </div>
-            <div class="totals-bar__item">
-              <span class="totals-bar__label">Разом час:</span>
-              <span class="totals-bar__value js-total-time">${formatNumber(totals.totalTime)}</span>
-            </div>
+            <span class="totals-bar__text">
+              Разом у списку: ціна <span class="totals-bar__value js-total-price">${formatNumber(totals.totalPrice)}</span> грн, час <span class="totals-bar__value js-total-time">${formatNumber(totals.totalTime)}</span> год
+            </span>
           </div>
         </header>
 
@@ -163,7 +163,7 @@ export class UIRenderer {
   }
 
   /**
-   * Renders a single list item and its potential nested lists
+   * Renders a single list item as a text line with underlined inputs
    */
   renderItemHtml(item, parentListId, indexNumber) {
     const itemTotals = calculateItemTotals(item);
@@ -199,11 +199,13 @@ export class UIRenderer {
               type="text"
               class="input-underlined js-item-content"
               value="${this.escape(item.content || '')}"
-              placeholder="Зміст елемента..."
+              placeholder="введіть зміст..."
               aria-label="Зміст елемента"
               data-item-id="${item.id}"
             />
           </div>
+
+          <span class="list-item__sep" aria-hidden="true">—</span>
 
           <!-- Price field -->
           <div class="list-item__price-field">
@@ -220,6 +222,7 @@ export class UIRenderer {
               aria-label="Ціна"
               data-item-id="${item.id}"
             />
+            <span class="list-item__unit">грн</span>
           </div>
 
           <!-- Time field -->
@@ -237,9 +240,10 @@ export class UIRenderer {
               aria-label="Час"
               data-item-id="${item.id}"
             />
+            <span class="list-item__unit">год</span>
           </div>
 
-          <!-- Item Actions -->
+          <!-- Item Actions as textual links -->
           <div class="list-item__actions">
             <button
               type="button"
@@ -248,7 +252,7 @@ export class UIRenderer {
               data-parent-list-id="${parentListId}"
               title="Додати елемент після цього (Enter)"
             >
-              + рядок
+              [+ рядок]
             </button>
             <button
               type="button"
@@ -256,7 +260,7 @@ export class UIRenderer {
               data-item-id="${item.id}"
               title="Додати вкладений список (Ctrl+Enter)"
             >
-              + підсписок
+              [+ підсписок]
             </button>
             <button
               type="button"
@@ -264,7 +268,7 @@ export class UIRenderer {
               data-item-id="${item.id}"
               title="Видалити цей елемент"
             >
-              ×
+              [×]
             </button>
           </div>
         </div>
@@ -275,7 +279,7 @@ export class UIRenderer {
   }
 
   /**
-   * Renders a nested list container with its header and items
+   * Renders a nested list container with textual outline header and items
    */
   renderNestedListHtml(nestedList, parentItemId) {
     const totals = calculateListTotals(nestedList);
@@ -283,19 +287,14 @@ export class UIRenderer {
     return `
       <section class="nested-list-box" data-nested-list-id="${nestedList.id}" data-parent-item-id="${parentItemId}">
         <header class="nested-list-header">
-          <span class="nested-list-header__title">
-            ${this.escape(nestedList.title || 'Вкладений список')}
-          </span>
-
-          <div class="totals-bar">
-            <div class="totals-bar__item">
-              <span class="totals-bar__label">Ціна:</span>
-              <span class="totals-bar__value js-nested-price">${formatNumber(totals.totalPrice)}</span>
-            </div>
-            <div class="totals-bar__item">
-              <span class="totals-bar__label">Час:</span>
-              <span class="totals-bar__value js-nested-time">${formatNumber(totals.totalTime)}</span>
-            </div>
+          <div class="nested-list-header__info">
+            <span class="nested-list-header__marker" aria-hidden="true">↳</span>
+            <span class="nested-list-header__title">
+              ${this.escape(nestedList.title || 'Вкладений список')}
+            </span>
+            <span class="nested-list-header__totals">
+              — разом: ціна <span class="totals-bar__value js-nested-price">${formatNumber(totals.totalPrice)}</span> грн, час <span class="totals-bar__value js-nested-time">${formatNumber(totals.totalTime)}</span> год
+            </span>
           </div>
 
           <div class="nested-list-header__actions">
@@ -305,7 +304,7 @@ export class UIRenderer {
               data-parent-list-id="${nestedList.id}"
               title="Додати елемент у цей підсписок"
             >
-              + додати в підсписок
+              [+ додати в підсписок]
             </button>
             <button
               type="button"
@@ -313,7 +312,7 @@ export class UIRenderer {
               data-nested-list-id="${nestedList.id}"
               title="Видалити весь підсписок"
             >
-              × видалити підсписок
+              [× видалити підсписок]
             </button>
           </div>
         </header>

@@ -1,37 +1,51 @@
-/* App Layout */
+/* ============================================================
+   App Layout — Page of Text (Literary / Editorial Style)
+   ============================================================ */
 
-/* Smooth theme transitions */
 html {
   color-scheme: light dark;
   transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
+body {
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  line-height: 1.65;
+  letter-spacing: 0.01em;
+  padding: 0;
+  margin: 0;
+}
+
+/* Page container: centered text column like an essay or manuscript page */
 .app-container {
   width: 100%;
   max-width: var(--container-max-width);
   margin: 0 auto;
-  padding: var(--space-md) var(--space-md) var(--space-2xl);
+  padding: var(--space-xl) var(--space-md) var(--space-2xl);
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: var(--space-xl);
   min-height: 100vh;
 }
 
-/* Header & Top Bar */
+/* Header & Top Bar: feels like the header/masthead of a text document */
 .app-header {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
-  padding-bottom: var(--space-md);
-  border-bottom: 1px solid var(--underline-dim);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px dotted var(--underline-dim);
 }
 
 .app-header__top {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: var(--space-sm);
+  gap: var(--space-xs) var(--space-md);
 }
 
 .app-header__brand {
@@ -41,38 +55,47 @@ html {
 }
 
 .app-header__title {
+  font-family: var(--font-family-base);
   font-size: var(--font-size-xl);
   font-weight: 700;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.01em;
   color: var(--text-primary);
-  text-transform: lowercase;
+  text-wrap: balance;
 }
 
 .app-header__subtitle {
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-sm);
   color: var(--text-muted);
   font-style: italic;
 }
 
 .app-header__global-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-xs);
   flex-wrap: wrap;
+  font-size: var(--font-size-sm);
 }
 
-/* Navigation / Tabs Bar */
+.sep {
+  color: var(--text-muted);
+  user-select: none;
+  opacity: 0.6;
+}
+
+/* Navigation / Tabs Bar: flows like a chapter / section index */
 .tabs-nav {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: var(--space-xs);
   overflow-x: auto;
-  padding-bottom: var(--space-2xs);
+  padding: var(--space-2xs) 0;
+  font-size: var(--font-size-sm);
   scrollbar-width: thin;
 }
 
 .tabs-nav::-webkit-scrollbar {
-  height: 3px;
+  height: 2px;
 }
 
 .tabs-nav::-webkit-scrollbar-thumb {
@@ -84,44 +107,44 @@ html {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: var(--space-xl);
 }
 
-/* Footer & Help Hints */
+/* Footer / Colophon: subtle notes at page bottom */
 .app-footer {
   margin-top: auto;
   padding-top: var(--space-md);
-  border-top: 1px solid var(--underline-dim);
+  border-top: 1px dotted var(--underline-dim);
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: var(--space-xs);
+  gap: var(--space-xs) var(--space-md);
   font-size: var(--font-size-xs);
   color: var(--text-muted);
+  text-wrap: pretty;
 }
 
 .app-footer__shortcuts {
-  display: flex;
+  display: inline-flex;
   gap: var(--space-md);
   flex-wrap: wrap;
 }
 
 .app-footer kbd {
   font-family: var(--font-family-mono);
-  font-size: 0.8em;
-  padding: 0.1em 0.35em;
+  font-size: 0.9em;
+  padding: 0 0.25em;
+  border-bottom: 1px solid var(--underline-dim);
   background-color: var(--kbd-bg);
-  border-bottom: 1px solid var(--underline-color);
-  border-radius: 2px;
+}
+
+.app-footer__status {
+  font-style: italic;
 }
 
 @media (min-width: 640px) {
   .app-container {
-    padding: var(--space-xl) var(--space-lg) var(--space-2xl);
-  }
-
-  .app-header {
-    gap: var(--space-md);
+    padding: var(--space-2xl) var(--space-lg) var(--space-2xl);
   }
 }

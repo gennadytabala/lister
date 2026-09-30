@@ -1,34 +1,43 @@
-/* Buttons & Text Links */
+/* ============================================================
+   Lister Components — Text-like Interface (Page of Text)
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. Textual Buttons & Action Links
+   ------------------------------------------------------------ */
 .btn {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2xs);
-  padding: var(--space-2xs) var(--space-xs);
-  font-size: var(--font-size-sm);
-  color: var(--text-primary);
-  border-bottom: 1px solid transparent;
-  transition: color var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast);
+  align-items: baseline;
+  gap: 0.2em;
+  padding: 0 0.15em;
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-bottom: 1px dotted transparent;
+  cursor: pointer;
+  text-decoration: none;
   white-space: nowrap;
   user-select: none;
-  border-radius: var(--border-radius-sm);
+  transition: color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .btn:hover {
   color: var(--accent-color);
   border-bottom-color: var(--accent-color);
-  background-color: var(--accent-light);
 }
 
 .btn:focus-visible {
-  outline: 2px solid var(--accent-color);
-  outline-offset: 2px;
+  outline: none;
+  border-bottom: 1.5px solid var(--accent-color);
+  color: var(--accent-color);
 }
 
 .btn--accent {
   color: var(--accent-color);
   font-weight: 600;
-  border-bottom: 1px solid var(--accent-color);
+  border-bottom-color: transparent;
 }
 
 .btn--accent:hover {
@@ -43,51 +52,57 @@
 .btn--danger:hover {
   color: var(--danger-hover);
   border-bottom-color: var(--danger-hover);
-  background-color: var(--danger-bg);
 }
 
 .btn--icon-text {
-  padding: 2px var(--space-xs);
   font-size: var(--font-size-xs);
+  opacity: 0.8;
 }
 
-/* Theme Toggle Button */
+.btn--icon-text:hover {
+  opacity: 1;
+}
+
 .btn--theme {
   font-family: var(--font-family-mono);
   font-size: var(--font-size-xs);
-  letter-spacing: 0.02em;
   color: var(--text-muted);
-  border-bottom: 1px solid var(--underline-dim);
-  padding: 2px var(--space-xs);
-  transition: color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .btn--theme:hover {
   color: var(--accent-color);
-  border-bottom-color: var(--accent-color);
-  background-color: transparent;
 }
 
-/* Tabs for List Switcher */
+/* ------------------------------------------------------------
+   2. Lists Navigation (Textual Chapters / Index)
+   ------------------------------------------------------------ */
 .tabs-list {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2xs);
-  flex-wrap: nowrap;
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.tabs-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  font-style: italic;
+  user-select: none;
 }
 
 .tab-item {
   display: inline-flex;
-  align-items: center;
-  gap: var(--space-2xs);
-  padding: var(--space-xs) var(--space-sm);
+  align-items: baseline;
+  padding: 0 0.15em;
   font-size: var(--font-size-sm);
   color: var(--text-muted);
-  border-bottom: 2px solid transparent;
-  transition: all var(--transition-fast);
-  cursor: pointer;
   background: transparent;
-  max-width: 180px;
+  border: none;
+  border-bottom: 1px dotted transparent;
+  cursor: pointer;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+  white-space: nowrap;
+  max-width: 240px;
 }
 
 .tab-item:hover {
@@ -95,10 +110,15 @@
   border-bottom-color: var(--underline-dim);
 }
 
+.tab-item:focus-visible {
+  outline: none;
+  border-bottom: 1.5px solid var(--accent-color);
+}
+
 .tab-item--active {
   color: var(--accent-color);
-  font-weight: 600;
-  border-bottom: 2px solid var(--accent-color);
+  font-weight: 700;
+  border-bottom: 1.5px solid var(--accent-color);
 }
 
 .tab-item__name {
@@ -107,161 +127,184 @@
   white-space: nowrap;
 }
 
-/* List Container */
+/* ------------------------------------------------------------
+   3. Active List View & Header
+   ------------------------------------------------------------ */
 .list-view {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-lg);
   background: transparent;
 }
 
-/* List Header */
 .list-header {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
-  padding-bottom: var(--space-sm);
-  border-bottom: 1px dashed var(--underline-dim);
+  gap: var(--space-2xs);
+  padding-bottom: var(--space-xs);
+  border-bottom: 1px dotted var(--underline-dim);
 }
 
 .list-header__main-row {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: var(--space-sm);
+  gap: var(--space-xs) var(--space-md);
 }
 
 .list-header__title-wrapper {
-  flex: 1;
-  min-width: 200px;
+  flex: 1 1 280px;
 }
 
+/* Title is styled like a document / chapter heading with an underline */
 .list-header__title-input {
   width: 100%;
-  font-size: var(--font-size-xl);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-2xl);
   font-weight: 700;
+  letter-spacing: -0.01em;
   color: var(--text-primary);
-  border-bottom: 2px solid var(--underline-color);
-  padding: var(--space-2xs) 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid var(--underline-color);
+  padding: 0 0 2px 0;
+  border-radius: 0;
+  text-wrap: balance;
   transition: border-color var(--transition-fast);
 }
 
-.list-header__title-input:focus {
+.list-header__title-input:hover {
   border-bottom-color: var(--accent-color);
+}
+
+.list-header__title-input:focus {
+  outline: none;
+  border-bottom: 2px solid var(--accent-color);
+  background: var(--input-focus-bg);
 }
 
 .list-header__title-input::placeholder {
   color: var(--text-muted);
   font-weight: 400;
-  opacity: 0.3;
+  font-style: italic;
+  opacity: 0.45;
 }
 
 .list-header__actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-}
-
-/* Aggregated Totals Bar */
-.totals-bar {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-md);
-  padding: var(--space-xs) var(--space-sm);
-  background-color: var(--bg-surface);
-  border-radius: var(--border-radius-sm);
-  border-bottom: 1px solid var(--underline-dim);
-  font-size: var(--font-size-sm);
-  color: var(--text-primary);
-  width: fit-content;
-}
-
-.totals-bar__item {
   display: inline-flex;
   align-items: baseline;
-  gap: var(--space-2xs);
+  font-size: var(--font-size-sm);
 }
 
-.totals-bar__label {
+/* ------------------------------------------------------------
+   4. Totals Prose Sentence (Highlighted Words)
+   ------------------------------------------------------------ */
+.totals-bar {
+  display: inline-flex;
+  align-items: baseline;
+  font-size: var(--font-size-sm);
   color: var(--text-muted);
-  font-size: var(--font-size-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  background: transparent;
+  border: none;
+  padding: var(--space-2xs) 0;
+  line-height: 1.6;
+}
+
+.totals-bar__text {
+  display: inline;
 }
 
 .totals-bar__value {
   font-family: var(--font-family-mono);
   font-weight: 700;
   color: var(--accent-color);
+  border-bottom: 1px dotted var(--accent-color);
+  padding: 0 2px;
 }
 
-/* Items List */
+/* ------------------------------------------------------------
+   5. List Items & Text Underlined Inputs
+   ------------------------------------------------------------ */
 .items-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: var(--space-2xs);
 }
 
-/* Individual List Item */
 .list-item {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
   padding: var(--space-2xs) 0;
-  transition: background-color var(--transition-fast);
-}
-
-.list-item:hover>.list-item__row {
-  background-color: var(--row-hover-bg);
+  background: transparent;
 }
 
 .list-item__row {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   flex-wrap: wrap;
-  gap: var(--space-sm);
-  padding: var(--space-2xs) var(--space-xs);
-  border-radius: var(--border-radius-sm);
+  gap: var(--space-xs) var(--space-sm);
+  padding: var(--space-2xs) 0;
+  background: transparent;
 }
 
 .list-item__marker {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
   color: var(--text-muted);
-  font-size: var(--font-size-sm);
   user-select: none;
-  min-width: 14px;
-  text-align: center;
+  min-width: 1.8ch;
+  text-align: right;
 }
 
 .list-item__content-field {
-  flex: 2;
-  min-width: 160px;
+  flex: 1 1 240px;
+  min-width: 180px;
+}
+
+.list-item__sep {
+  color: var(--text-muted);
+  user-select: none;
+  opacity: 0.5;
 }
 
 .list-item__price-field,
 .list-item__time-field {
-  flex: 0 1 90px;
-  min-width: 75px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  white-space: nowrap;
 }
 
 .list-item__field-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  user-select: none;
+}
+
+.list-item__unit {
   font-size: var(--font-size-xs);
   color: var(--text-muted);
   user-select: none;
 }
 
-/* Underlined Text Inputs - Pure Text Style */
+/* ------------------------------------------------------------
+   Pure Text Underlined Inputs (No boxes, no frames)
+   ------------------------------------------------------------ */
 .input-underlined {
-  width: 100%;
-  color: var(--text-primary);
-  border-bottom: 1px solid var(--underline-color);
-  padding: 4px 2px;
+  font-family: inherit;
   font-size: var(--font-size-base);
-  transition: border-bottom-color var(--transition-fast), background-color var(--transition-fast);
-  background-color: transparent;
+  line-height: inherit;
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--underline-color);
+  border-radius: 0;
+  padding: 1px 2px;
+  width: 100%;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
 }
 
 .input-underlined:hover {
@@ -269,6 +312,7 @@
 }
 
 .input-underlined:focus {
+  outline: none;
   border-bottom: 1.5px solid var(--accent-color);
   background-color: var(--input-focus-bg);
 }
@@ -276,10 +320,13 @@
 .input-underlined::placeholder {
   color: var(--text-muted);
   opacity: 0.45;
+  font-style: italic;
 }
 
 .input-underlined--number {
   font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  width: 5.5ch;
   text-align: right;
   -moz-appearance: textfield;
 }
@@ -290,92 +337,107 @@
   margin: 0;
 }
 
-/* Computed / Read-only Fields (When item has nested sublists) */
+/* Computed / Auto-calculated values from sublists (dashed underline, accent color) */
 .input-underlined--computed {
-  border-bottom-style: dashed;
-  cursor: not-allowed;
+  border-bottom: 1px dashed var(--underline-dashed);
   color: var(--accent-color);
-  font-weight: 600;
-  opacity: 0.9;
+  font-weight: 700;
+  cursor: not-allowed;
   background-color: transparent !important;
 }
 
 .input-underlined--computed:focus {
-  border-bottom-color: var(--underline-color);
+  border-bottom-color: var(--accent-color);
 }
 
-/* Action Buttons per item */
+/* ------------------------------------------------------------
+   Item Actions (Subtle textual annotations)
+   ------------------------------------------------------------ */
 .list-item__actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2xs);
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-xs);
   margin-left: auto;
-  opacity: 0.85;
+  opacity: 0.45;
   transition: opacity var(--transition-fast);
 }
 
-.list-item:hover .list-item__actions {
+.list-item:hover .list-item__actions,
+.list-item:focus-within .list-item__actions {
   opacity: 1;
 }
 
-/* Nested Lists Container */
+/* ------------------------------------------------------------
+   6. Nested Lists Container (Indented Outline / Subsections)
+   ------------------------------------------------------------ */
 .nested-container {
   margin-left: var(--space-md);
-  padding-left: var(--space-sm);
-  border-left: 2px solid var(--underline-dim);
+  padding-left: var(--space-md);
+  border-left: 1.5px solid var(--underline-dim);
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
-  margin-top: var(--space-xs);
-  margin-bottom: var(--space-xs);
+  gap: var(--space-xs);
+  margin-top: var(--space-2xs);
+  margin-bottom: var(--space-2xs);
 }
 
 .nested-list-box {
   display: flex;
   flex-direction: column;
   gap: var(--space-xs);
-  background-color: var(--nested-bg);
-  padding: var(--space-xs) var(--space-sm);
-  border-radius: var(--border-radius-sm);
+  background: transparent;
+  border: none;
+  padding: var(--space-2xs) 0;
 }
 
 .nested-list-header {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: var(--space-xs);
+  gap: var(--space-xs) var(--space-md);
   padding-bottom: var(--space-2xs);
   border-bottom: 1px dotted var(--underline-dim);
+  font-size: var(--font-size-sm);
+}
+
+.nested-list-header__info {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2xs);
+  flex-wrap: wrap;
+}
+
+.nested-list-header__marker {
+  color: var(--accent-color);
+  user-select: none;
 }
 
 .nested-list-header__title {
-  font-size: var(--font-size-sm);
   font-weight: 600;
   color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2xs);
 }
 
-.nested-list-header__title::before {
-  content: "↳";
-  color: var(--accent-color);
-  font-size: 1.1em;
+.nested-list-header__totals {
+  color: var(--text-muted);
 }
 
 .nested-list-header__actions {
-  display: flex;
-  align-items: center;
+  display: inline-flex;
+  align-items: baseline;
   gap: var(--space-xs);
 }
 
-/* Add Item Button at bottom of list */
+/* ------------------------------------------------------------
+   7. Add Item Row
+   ------------------------------------------------------------ */
 .list-add-row {
   padding: var(--space-xs) 0;
 }
 
-/* Modal / File Input Helpers */
+/* ------------------------------------------------------------
+   8. Utility & Hidden Elements
+   ------------------------------------------------------------ */
 .hidden-file-input {
   position: absolute;
   width: 1px;
@@ -387,45 +449,47 @@
   border: 0;
 }
 
-/* Empty State */
-.empty-state {
-  text-align: center;
-  padding: var(--space-xl) var(--space-md);
-  color: var(--text-muted);
-  font-style: italic;
-}
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
-  .list-item__row {
+/* ------------------------------------------------------------
+   9. Mobile Responsiveness (Pure Text Flow)
+   ------------------------------------------------------------ */
+@media (max-width: 640px) {
+  .app-header__top {
     flex-direction: column;
-    align-items: stretch;
+    align-items: flex-start;
     gap: var(--space-xs);
-    padding: var(--space-xs);
-    background-color: var(--mobile-row-bg);
+  }
+
+  .app-header__global-actions {
+    width: 100%;
+    justify-content: flex-start;
+    gap: var(--space-xs);
+  }
+
+  .list-item__row {
+    flex-wrap: wrap;
+    gap: var(--space-2xs) var(--space-xs);
+    padding: var(--space-xs) 0;
+    border-bottom: 1px dotted var(--underline-dim);
   }
 
   .list-item__content-field {
+    flex: 1 1 100%;
     width: 100%;
+  }
+
+  .list-item__sep {
+    display: none;
   }
 
   .list-item__price-field,
   .list-item__time-field {
-    width: 48%;
-  }
-
-  .list-item__numbers-group {
-    display: flex;
-    justify-content: space-between;
-    gap: var(--space-sm);
+    flex: 0 0 auto;
   }
 
   .list-item__actions {
-    margin-left: 0;
-    justify-content: flex-end;
-    width: 100%;
-    border-top: 1px dotted var(--underline-dim);
-    padding-top: var(--space-2xs);
+    opacity: 0.9;
+    margin-left: auto;
+    width: auto;
   }
 
   .nested-container {
@@ -433,8 +497,9 @@
     padding-left: var(--space-xs);
   }
 
-  .totals-bar {
-    width: 100%;
-    justify-content: space-around;
+  .nested-list-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2xs);
   }
 }

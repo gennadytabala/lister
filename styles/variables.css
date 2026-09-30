@@ -1,68 +1,70 @@
 /* ============================================================
-   LIGHT THEME (default)
+   LIGHT THEME (paper / document style)
    ============================================================ */
 :root,
 [data-theme="light"] {
-  /* Background */
-  --bg-primary: #FFFCF9;
-  --bg-surface: rgba(70, 83, 98, 0.05);
-  --bg-surface-hover: rgba(70, 83, 98, 0.08);
-  --row-hover-bg: rgba(70, 83, 98, 0.06);
-  --nested-bg: rgba(70, 83, 98, 0.04);
-  --mobile-row-bg: rgba(70, 83, 98, 0.05);
-  --input-focus-bg: rgba(255, 255, 255, 0.85);
-  --kbd-bg: rgba(70, 83, 98, 0.08);
+  /* Canvas / Paper Background */
+  --bg-primary: #FAF8F5;
+  --bg-surface: transparent;
+  --bg-surface-hover: transparent;
+  --row-hover-bg: transparent;
+  --nested-bg: transparent;
+  --mobile-row-bg: transparent;
+  --input-focus-bg: rgba(184, 93, 54, 0.04);
+  --kbd-bg: rgba(43, 52, 64, 0.06);
 
-  /* Text */
-  --text-primary: #465362;
-  --text-muted: rgba(70, 83, 98, 0.6);
+  /* Typography / Ink */
+  --text-primary: #2C3539;
+  --text-muted: #6B7785;
 
-  /* Borders & Underlines */
-  --underline-color: #465362;
-  --underline-dim: rgba(70, 83, 98, 0.25);
+  /* Underlines for editable fields */
+  --underline-color: #2C3539;
+  --underline-dim: rgba(44, 53, 57, 0.28);
+  --underline-dashed: rgba(184, 93, 54, 0.6);
 
-  /* Accent */
-  --accent-color: #C57B57;
-  --accent-hover: #b06945;
-  --accent-light: rgba(197, 123, 87, 0.12);
+  /* Accents / Highlighted words & active links */
+  --accent-color: #B85D36;
+  --accent-hover: #964522;
+  --accent-light: rgba(184, 93, 54, 0.08);
 
-  /* Danger */
-  --danger-color: #9e433c;
-  --danger-hover: #82332c;
-  --danger-bg: rgba(158, 67, 60, 0.08);
+  /* Danger / Delete actions */
+  --danger-color: #9E3838;
+  --danger-hover: #7E2626;
+  --danger-bg: rgba(158, 56, 56, 0.08);
 }
 
 /* ============================================================
-   DARK THEME — Monokai-inspired
+   DARK THEME (slate / night reading style)
    ============================================================ */
 [data-theme="dark"] {
-  /* Background */
-  --bg-primary: #272822;
-  --bg-surface: rgba(255, 255, 255, 0.04);
-  --bg-surface-hover: rgba(255, 255, 255, 0.07);
-  --row-hover-bg: rgba(255, 255, 255, 0.04);
-  --nested-bg: rgba(0, 0, 0, 0.18);
-  --mobile-row-bg: rgba(0, 0, 0, 0.15);
-  --input-focus-bg: rgba(255, 255, 255, 0.06);
-  --kbd-bg: rgba(255, 255, 255, 0.08);
+  /* Slate Canvas Background */
+  --bg-primary: #1C1E22;
+  --bg-surface: transparent;
+  --bg-surface-hover: transparent;
+  --row-hover-bg: transparent;
+  --nested-bg: transparent;
+  --mobile-row-bg: transparent;
+  --input-focus-bg: rgba(229, 161, 98, 0.06);
+  --kbd-bg: rgba(232, 229, 223, 0.08);
 
-  /* Text */
-  --text-primary: #eaeae2;
-  --text-muted: #75715e;
+  /* Typography / Parchment Ink */
+  --text-primary: #E8E5DF;
+  --text-muted: #8F949C;
 
-  /* Borders & Underlines */
-  --underline-color: #49483e;
-  --underline-dim: rgba(255, 255, 255, 0.1);
+  /* Underlines for editable fields */
+  --underline-color: #8F949C;
+  --underline-dim: rgba(143, 148, 156, 0.3);
+  --underline-dashed: rgba(229, 161, 98, 0.6);
 
-  /* Accent — Monokai warm yellow */
-  --accent-color: #928d57;
-  --accent-hover: #d4c85c;
-  --accent-light: rgba(230, 219, 116, 0.1);
+  /* Accents / Warm Gold */
+  --accent-color: #E5A162;
+  --accent-hover: #F5B880;
+  --accent-light: rgba(229, 161, 98, 0.1);
 
-  /* Danger — Monokai red */
-  --danger-color: #b25174;
-  --danger-hover: #e01560;
-  --danger-bg: rgba(249, 38, 114, 0.1);
+  /* Danger */
+  --danger-color: #E06C75;
+  --danger-hover: #F28B93;
+  --danger-bg: rgba(224, 108, 117, 0.1);
 }
 
 /* ============================================================
@@ -70,58 +72,59 @@
    ============================================================ */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]):not([data-theme="dark"]) {
-    --bg-primary: #272822;
-    --bg-surface: rgba(255, 255, 255, 0.04);
-    --bg-surface-hover: rgba(255, 255, 255, 0.07);
-    --row-hover-bg: rgba(255, 255, 255, 0.04);
-    --nested-bg: rgba(0, 0, 0, 0.18);
-    --mobile-row-bg: rgba(0, 0, 0, 0.15);
-    --input-focus-bg: rgba(255, 255, 255, 0.06);
-    --kbd-bg: rgba(255, 255, 255, 0.08);
-    --text-primary: #f8f8f2;
-    --text-muted: #75715e;
-    --underline-color: #49483e;
-    --underline-dim: rgba(255, 255, 255, 0.1);
-    --accent-color: #e6db74;
-    --accent-hover: #d4c85c;
-    --accent-light: rgba(231, 223, 153, 0.1);
-    --danger-color: #f92672;
-    --danger-hover: #e01560;
-    --danger-bg: rgba(249, 38, 114, 0.1);
+    --bg-primary: #1C1E22;
+    --bg-surface: transparent;
+    --bg-surface-hover: transparent;
+    --row-hover-bg: transparent;
+    --nested-bg: transparent;
+    --mobile-row-bg: transparent;
+    --input-focus-bg: rgba(229, 161, 98, 0.06);
+    --kbd-bg: rgba(232, 229, 223, 0.08);
+    --text-primary: #E8E5DF;
+    --text-muted: #8F949C;
+    --underline-color: #8F949C;
+    --underline-dim: rgba(143, 148, 156, 0.3);
+    --underline-dashed: rgba(229, 161, 98, 0.6);
+    --accent-color: #E5A162;
+    --accent-hover: #F5B880;
+    --accent-light: rgba(229, 161, 98, 0.1);
+    --danger-color: #E06C75;
+    --danger-hover: #F28B93;
+    --danger-bg: rgba(224, 108, 117, 0.1);
   }
 }
 
 /* ============================================================
-   TYPOGRAPHY & SPACING — theme-independent
+   TYPOGRAPHY & SPACING — Literary Page Style
    ============================================================ */
 :root {
-  --font-family-base: "Times New Roman", Times, serif;
-  --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-  --font-size-xs: 0.75rem;
-  /* 12px */
-  --font-size-sm: 0.875rem;
-  /* 14px */
-  --font-size-base: 1rem;
-  /* 16px */
-  --font-size-lg: 1.125rem;
-  /* 18px */
-  --font-size-xl: 1.25rem;
+  --font-family-base: Charter, "Bitstream Charter", "Iowan Old Style", "Sitka Text", Cambria, "Times New Roman", Times, serif;
+  --font-family-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --font-size-xs: 0.8125rem;
+  /* 13px */
+  --font-size-sm: 0.9375rem;
+  /* 15px */
+  --font-size-base: 1.0625rem;
+  /* 17px */
+  --font-size-lg: 1.25rem;
   /* 20px */
-  --font-size-2xl: 1.5rem;
+  --font-size-xl: 1.5rem;
   /* 24px */
+  --font-size-2xl: 1.875rem;
+  /* 30px */
 
   --space-2xs: 0.25rem;
   --space-xs: 0.5rem;
   --space-sm: 0.75rem;
   --space-md: 1rem;
   --space-lg: 1.5rem;
-  --space-xl: 2rem;
-  --space-2xl: 3rem;
+  --space-xl: 2.25rem;
+  --space-2xl: 3.5rem;
 
-  --container-max-width: 960px;
-  --border-radius-sm: 3px;
-  --border-radius-md: 6px;
+  --container-max-width: 820px;
+  --border-radius-sm: 0px;
+  --border-radius-md: 0px;
 
-  --transition-fast: 0.15s ease;
-  --transition-normal: 0.25s ease;
+  --transition-fast: 0.12s ease;
+  --transition-normal: 0.2s ease;
 }
