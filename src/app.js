@@ -95,6 +95,13 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    // Toggle custom list field (Requirement 14)
+    const btnToggleField = target.closest('.js-btn-toggle-field');
+    if (btnToggleField && btnToggleField.dataset.field && btnToggleField.dataset.listId) {
+      state.toggleListField(btnToggleField.dataset.listId, btnToggleField.dataset.field);
+      return;
+    }
+
     // Delete list
     const btnDeleteList = target.closest('.js-btn-delete-list');
     if (btnDeleteList && btnDeleteList.dataset.listId) {
@@ -144,7 +151,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 2. Input delegation (live editing of titles, content, price, time)
+  // 2. Change delegation (Checkbox completion toggle)
+  root.addEventListener('change', (event) => {
+    const target = event.target;
+    if (target.classList.contains('js-item-completed')) {
+      const itemId = target.dataset.itemId;
+      if (itemId) {
+        state.toggleItemCompleted(itemId);
+      }
+    }
+  });
+
+  // 3. Input delegation (live editing of titles, content, price, time)
   root.addEventListener('input', (event) => {
     const target = event.target;
 
@@ -178,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 3. Keyboard navigation delegation (Enter, Ctrl+Enter, Cmd+Enter)
+  // 4. Keyboard navigation delegation (Enter, Ctrl+Enter, Cmd+Enter)
   root.addEventListener('keydown', (event) => {
     const target = event.target;
 

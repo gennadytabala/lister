@@ -42,3 +42,6 @@ build/
 # Testing & Coverage
 coverage/
 .nyc_output/
+
+# Inner docs
+.project.md

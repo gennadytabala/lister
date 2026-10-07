@@ -67,6 +67,7 @@ export function exportListAsJson(list) {
 /**
  * Recursively re-assigns fresh IDs to an imported list and all its nested elements
  * to avoid any ID collisions with existing state.
+ * Preserves configured fields and completion states.
  *
  * @param {object} list
  * @returns {object}
@@ -77,6 +78,7 @@ export function sanitizeImportedList(list) {
     content: typeof item.content === 'string' ? item.content : '',
     price: Number(item.price) || 0,
     time: Number(item.time) || 0,
+    completed: Boolean(item.completed),
     nestedLists: Array.isArray(item.nestedLists)
       ? item.nestedLists.map((nl) => sanitizeNestedList(nl))
       : []
@@ -88,9 +90,15 @@ export function sanitizeImportedList(list) {
     items: Array.isArray(nl.items) ? nl.items.map(sanitizeItem) : []
   });
 
+  const allowedFields = ['price', 'time', 'completed'];
+  const fields = Array.isArray(list.fields)
+    ? list.fields.filter(f => allowedFields.includes(f))
+    : ['price', 'time'];
+
   return {
     id: generateId(),
     title: typeof list.title === 'string' && list.title.trim() ? list.title : 'Імпортований список',
+    fields,
     items: Array.isArray(list.items) ? list.items.map(sanitizeItem) : []
   };
 }
@@ -119,7 +127,7 @@ export async function readJsonFile(file) {
         if (Array.isArray(parsed.items)) {
           resolve(sanitizeImportedList(parsed));
         } else if (Array.isArray(parsed.lists) && parsed.lists.length > 0) {
-          // If a whole backup was uploaded, take first or wrap
+          // If a whole backup was uploaded, take first
           resolve(sanitizeImportedList(parsed.lists[0]));
         } else {
           throw new Error('Файл не містить валідної структури списку (items)');

@@ -3,6 +3,9 @@
  */
 import { generateId } from './utils.js';
 import { loadData, saveData } from './storage.js';
+import { hasNestedLists, calculateItemTotals } from './calculations.js';
+
+export const ALLOWED_FIELDS = ['price', 'time', 'completed'];
 
 export class AppState {
   constructor() {
@@ -15,6 +18,12 @@ export class AppState {
     const saved = loadData();
     if (saved && Array.isArray(saved.lists) && saved.lists.length > 0) {
       this.data = saved;
+      // Ensure all lists have a valid fields array
+      for (const list of this.data.lists) {
+        if (!Array.isArray(list.fields)) {
+          list.fields = ['price', 'time'];
+        }
+      }
       if (!this.data.activeListId || !this.data.lists.some(l => l.id === this.data.activeListId)) {
         this.data.activeListId = this.data.lists[0].id;
       }
@@ -27,12 +36,14 @@ export class AppState {
           {
             id: initialListId,
             title: '',
+            fields: ['price', 'time'],
             items: [
               {
                 id: initialItemId,
                 content: '',
                 price: 0,
                 time: 0,
+                completed: false,
                 nestedLists: []
               }
             ]
@@ -77,13 +88,15 @@ export class AppState {
     const firstItemId = generateId();
     const newList = {
       id: newListId,
-      title: title.trim(),  // empty by default — placeholder shown instead
+      title: title.trim(),
+      fields: ['price', 'time'],
       items: [
         {
           id: firstItemId,
           content: '',
           price: 0,
           time: 0,
+          completed: false,
           nestedLists: []
         }
       ]
@@ -105,6 +118,30 @@ export class AppState {
     }
   }
 
+  /**
+   * Toggles an optional field for the active list (price, time, completed).
+   * Note: 'content' is always present and cannot be toggled.
+   */
+  toggleListField(listId, fieldName) {
+    if (!ALLOWED_FIELDS.includes(fieldName)) return;
+    const list = this.data.lists.find(l => l.id === listId);
+    if (!list) return;
+
+    if (!Array.isArray(list.fields)) {
+      list.fields = ['price', 'time'];
+    }
+
+    const idx = list.fields.indexOf(fieldName);
+    if (idx !== -1) {
+      list.fields.splice(idx, 1);
+    } else {
+      list.fields.push(fieldName);
+    }
+
+    this.persist();
+    this.notify({ type: 'TOGGLE_LIST_FIELD', listId, fieldName });
+  }
+
   deleteList(listId) {
     if (this.data.lists.length <= 1) {
       // If deleting the only list, reset to a fresh empty list
@@ -114,12 +151,14 @@ export class AppState {
         {
           id: freshListId,
           title: '',
+          fields: ['price', 'time'],
           items: [
             {
               id: freshItemId,
               content: '',
               price: 0,
               time: 0,
+              completed: false,
               nestedLists: []
             }
           ]
@@ -138,6 +177,9 @@ export class AppState {
   }
 
   importList(importedList) {
+    if (!Array.isArray(importedList.fields)) {
+      importedList.fields = ['price', 'time'];
+    }
     this.data.lists.push(importedList);
     this.data.activeListId = importedList.id;
     this.persist();
@@ -211,6 +253,7 @@ export class AppState {
       content: '',
       price: 0,
       time: 0,
+      completed: false,
       nestedLists: []
     };
 
@@ -245,6 +288,7 @@ export class AppState {
         content: '',
         price: 0,
         time: 0,
+        completed: false,
         nestedLists: []
       };
       activeList.items.push(freshItem);
@@ -255,6 +299,12 @@ export class AppState {
     this.notify({ type: 'DELETE_ITEM' });
   }
 
+  /**
+   * Updates an item's fields (content, price, time, completed).
+   * If item has nested lists:
+   * - price & time cannot be manually set (they are aggregated from children).
+   * - completed toggles all descendant items recursively.
+   */
   updateItem(itemId, fields = {}) {
     const ctx = this.findItemContext(itemId);
     if (!ctx) return;
@@ -269,8 +319,9 @@ export class AppState {
       }
     }
 
+    const hasNested = hasNestedLists(ctx.item);
+
     // Direct price/time updates only allowed if item has no nested lists
-    const hasNested = Array.isArray(ctx.item.nestedLists) && ctx.item.nestedLists.length > 0;
     if (!hasNested) {
       if (typeof fields.price !== 'undefined') {
         ctx.item.price = fields.price;
@@ -280,8 +331,53 @@ export class AppState {
       }
     }
 
+    // Completed state update
+    if (typeof fields.completed !== 'undefined') {
+      const targetVal = Boolean(fields.completed);
+      if (hasNested) {
+        // Toggle all descendant items recursively
+        this.setCompletedRecursive(ctx.item, targetVal);
+      } else {
+        ctx.item.completed = targetVal;
+      }
+    }
+
     this.persist();
     this.notify({ type: 'UPDATE_ITEM', itemId });
+  }
+
+  /**
+   * Toggles completed state for an item.
+   * If parent has nested lists, toggles between all-true and all-false.
+   */
+  toggleItemCompleted(itemId) {
+    const ctx = this.findItemContext(itemId);
+    if (!ctx) return;
+
+    if (hasNestedLists(ctx.item)) {
+      const totals = calculateItemTotals(ctx.item);
+      // If currently all completed, uncheck all. Otherwise, check all.
+      const nextVal = !totals.completed;
+      this.setCompletedRecursive(ctx.item, nextVal);
+    } else {
+      ctx.item.completed = !ctx.item.completed;
+    }
+
+    this.persist();
+    this.notify({ type: 'UPDATE_ITEM', itemId });
+  }
+
+  setCompletedRecursive(item, val) {
+    item.completed = val;
+    if (Array.isArray(item.nestedLists)) {
+      for (const nl of item.nestedLists) {
+        if (Array.isArray(nl.items)) {
+          for (const child of nl.items) {
+            this.setCompletedRecursive(child, val);
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -296,7 +392,7 @@ export class AppState {
       ctx.item.nestedLists = [];
     }
 
-    // Requirement 3: When item receives nested elements, its own price and time are reset to 0
+    // Reset parent's own price and time to 0
     ctx.item.price = 0;
     ctx.item.time = 0;
 
@@ -310,6 +406,7 @@ export class AppState {
           content: '',
           price: 0,
           time: 0,
+          completed: false,
           nestedLists: []
         }
       ]

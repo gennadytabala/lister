@@ -1,5 +1,5 @@
 /**
- * UI Renderer for Lister — Text-like Interface (Page of text with underlined editable words)
+ * UI Renderer for Lister — Text-like Interface (Page of text with customizable fields)
  */
 import { formatNumber } from './utils.js';
 import { calculateItemTotals, calculateListTotals, hasNestedLists } from './calculations.js';
@@ -19,6 +19,7 @@ export class UIRenderer {
 
     this.renderTabs();
     this.renderActiveListView(activeList);
+    this.syncCheckboxesState();
 
     // Manage focus target if requested
     const focusItemId = options.focusItemId || this.state.focusTargetId;
@@ -43,6 +44,32 @@ export class UIRenderer {
         }
       }
     });
+  }
+
+  /**
+   * Synchronizes checked and indeterminate properties on all checkboxes
+   */
+  syncCheckboxesState() {
+    const checkboxes = this.root.querySelectorAll('.js-item-completed');
+    for (const cb of checkboxes) {
+      const itemId = cb.dataset.itemId;
+      const ctx = this.state.findItemContext(itemId);
+      if (ctx) {
+        const t = calculateItemTotals(ctx.item);
+        cb.checked = t.completed;
+        cb.indeterminate = t.isIndeterminate;
+
+        // Visual class on row for completed styling
+        const row = cb.closest('.list-item');
+        if (row) {
+          if (t.completed) {
+            row.classList.add('list-item--completed');
+          } else {
+            row.classList.remove('list-item--completed');
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -98,13 +125,34 @@ export class UIRenderer {
   }
 
   /**
-   * Renders the active list view (header, totals summary sentence, items, nested lists)
+   * Renders the active list view (header, field toggles, totals summary, items, nested lists)
    */
   renderActiveListView(list) {
     const listView = this.root.querySelector('.js-active-list-view');
     if (!listView) return;
 
+    const fields = Array.isArray(list.fields) ? list.fields : ['price', 'time'];
+    const hasPrice = fields.includes('price');
+    const hasTime = fields.includes('time');
+    const hasCompleted = fields.includes('completed');
+
     const totals = calculateListTotals(list);
+
+    // Build prose summary string for header totals
+    const parts = [];
+    if (hasCompleted) {
+      parts.push(`виконано <span class="totals-bar__value js-total-completed">${totals.completedCount}/${totals.totalItemsCount}</span>`);
+    }
+    if (hasPrice) {
+      parts.push(`ціна <span class="totals-bar__value js-total-price">${formatNumber(totals.totalPrice)}</span> грн`);
+    }
+    if (hasTime) {
+      parts.push(`час <span class="totals-bar__value js-total-time">${formatNumber(totals.totalTime)}</span> год`);
+    }
+
+    const totalsSentence = parts.length > 0
+      ? `Разом у списку: ${parts.join(', ')}`
+      : `У списку: ${totals.totalItemsCount} елементів`;
 
     listView.innerHTML = `
       <section class="list-view" aria-label="Поточний список">
@@ -128,17 +176,48 @@ export class UIRenderer {
             </div>
           </div>
 
+          <!-- Fields Configuration Row (Requirement 14) -->
+          <div class="fields-config">
+            <span class="fields-config__label">Поля:</span>
+            <span class="fields-config__always">[зміст]</span>
+            <button
+              type="button"
+              class="btn btn--field-toggle ${hasPrice ? 'btn--field-active' : ''} js-btn-toggle-field"
+              data-list-id="${list.id}"
+              data-field="price"
+              title="${hasPrice ? 'Прибрати поле вартості' : 'Додати поле вартості'}"
+            >
+              ${hasPrice ? '[вартість ✓]' : '[+ вартість]'}
+            </button>
+            <button
+              type="button"
+              class="btn btn--field-toggle ${hasTime ? 'btn--field-active' : ''} js-btn-toggle-field"
+              data-list-id="${list.id}"
+              data-field="time"
+              title="${hasTime ? 'Прибрати поле часу' : 'Додати поле часу'}"
+            >
+              ${hasTime ? '[час ✓]' : '[+ час]'}
+            </button>
+            <button
+              type="button"
+              class="btn btn--field-toggle ${hasCompleted ? 'btn--field-active' : ''} js-btn-toggle-field"
+              data-list-id="${list.id}"
+              data-field="completed"
+              title="${hasCompleted ? 'Прибрати поле виконано' : 'Додати поле виконано'}"
+            >
+              ${hasCompleted ? '[виконано ✓]' : '[+ виконано]'}
+            </button>
+          </div>
+
           <!-- Totals Prose Sentence -->
           <div class="totals-bar js-list-totals">
-            <span class="totals-bar__text">
-              Разом у списку: ціна <span class="totals-bar__value js-total-price">${formatNumber(totals.totalPrice)}</span> грн, час <span class="totals-bar__value js-total-time">${formatNumber(totals.totalTime)}</span> год
-            </span>
+            <span class="totals-bar__text">${totalsSentence}</span>
           </div>
         </header>
 
         <!-- Items Section -->
         <div class="items-list js-items-container" data-parent-list-id="${list.id}">
-          ${this.renderItemsListHtml(list.items, list.id)}
+          ${this.renderItemsListHtml(list.items, list.id, fields)}
         </div>
 
         <!-- Add Item Button at list end -->
@@ -154,22 +233,26 @@ export class UIRenderer {
   /**
    * Recursively renders items list HTML
    */
-  renderItemsListHtml(items, parentListId) {
+  renderItemsListHtml(items, parentListId, activeFields) {
     if (!Array.isArray(items) || items.length === 0) {
       return '';
     }
 
-    return items.map((item, index) => this.renderItemHtml(item, parentListId, index + 1)).join('');
+    return items.map((item, index) => this.renderItemHtml(item, parentListId, index + 1, activeFields)).join('');
   }
 
   /**
-   * Renders a single list item as a text line with underlined inputs
+   * Renders a single list item as a text line with only enabled fields
    */
-  renderItemHtml(item, parentListId, indexNumber) {
+  renderItemHtml(item, parentListId, indexNumber, activeFields) {
     const itemTotals = calculateItemTotals(item);
     const isComputed = itemTotals.isComputed;
 
-    // For non-computed fields: show empty string when value is 0 so the placeholder appears dimly
+    const hasPrice = activeFields.includes('price');
+    const hasTime = activeFields.includes('time');
+    const hasCompleted = activeFields.includes('completed');
+
+    // For non-computed fields: show empty string when value is 0 so placeholder appears dimly
     const priceValue = isComputed ? formatNumber(itemTotals.price) : (item.price || '');
     const timeValue = isComputed ? formatNumber(itemTotals.time) : (item.time || '');
 
@@ -179,21 +262,90 @@ export class UIRenderer {
     const priceTooltip = isComputed ? 'Розраховано автоматично з вкладених елементів' : 'Ціна';
     const timeTooltip = isComputed ? 'Розраховано автоматично з вкладених елементів' : 'Час';
 
+    // 1. Checkbox field (if enabled)
+    let completedHtml = '';
+    if (hasCompleted) {
+      completedHtml = `
+        <label class="list-item__completed-field" title="${isComputed ? 'Статус виконання вкладених підсписків' : 'Позначити як виконано'}">
+          <input
+            type="checkbox"
+            class="checkbox-text js-item-completed"
+            data-item-id="${item.id}"
+            ${itemTotals.completed ? 'checked' : ''}
+            aria-label="Виконано"
+          />
+        </label>
+      `;
+    }
+
+    // 2. Price field (if enabled)
+    let priceHtml = '';
+    if (hasPrice) {
+      priceHtml = `
+        <div class="list-item__price-field">
+          <label class="list-item__field-label" for="price-${item.id}">ціна:</label>
+          <input
+            id="price-${item.id}"
+            type="number"
+            step="any"
+            class="${priceClass} js-item-price"
+            value="${priceValue}"
+            placeholder="0"
+            ${isComputed ? 'readonly' : ''}
+            title="${priceTooltip}"
+            aria-label="Ціна"
+            data-item-id="${item.id}"
+          />
+          <span class="list-item__unit">грн</span>
+        </div>
+      `;
+    }
+
+    // 3. Time field (if enabled)
+    let timeHtml = '';
+    if (hasTime) {
+      timeHtml = `
+        <div class="list-item__time-field">
+          <label class="list-item__field-label" for="time-${item.id}">час:</label>
+          <input
+            id="time-${item.id}"
+            type="number"
+            step="any"
+            class="${timeClass} js-item-time"
+            value="${timeValue}"
+            placeholder="0"
+            ${isComputed ? 'readonly' : ''}
+            title="${timeTooltip}"
+            aria-label="Час"
+            data-item-id="${item.id}"
+          />
+          <span class="list-item__unit">год</span>
+        </div>
+      `;
+    }
+
+    // 4. Separator if numbers follow
+    const separatorHtml = (hasPrice || hasTime)
+      ? '<span class="list-item__sep" aria-hidden="true">—</span>'
+      : '';
+
+    // 5. Nested lists
     let nestedHtml = '';
     if (hasNestedLists(item)) {
       nestedHtml = `
         <div class="nested-container">
-          ${item.nestedLists.map(nl => this.renderNestedListHtml(nl, item.id)).join('')}
+          ${item.nestedLists.map(nl => this.renderNestedListHtml(nl, item.id, activeFields)).join('')}
         </div>
       `;
     }
 
     return `
-      <article class="list-item" data-item-id="${item.id}" data-parent-list-id="${parentListId}">
+      <article class="list-item ${itemTotals.completed ? 'list-item--completed' : ''}" data-item-id="${item.id}" data-parent-list-id="${parentListId}">
         <div class="list-item__row">
+          ${completedHtml}
           <span class="list-item__marker" aria-hidden="true">${indexNumber}.</span>
 
-          <!-- Content field -->
+          <!-- Content field (Always present) -->
           <div class="list-item__content-field">
             <input
               type="text"
@@ -205,43 +357,9 @@ export class UIRenderer {
             />
           </div>
 
-          <span class="list-item__sep" aria-hidden="true">—</span>
-
-          <!-- Price field -->
-          <div class="list-item__price-field">
-            <label class="list-item__field-label" for="price-${item.id}">ціна:</label>
-            <input
-              id="price-${item.id}"
-              type="number"
-              step="any"
-              class="${priceClass} js-item-price"
-              value="${priceValue}"
-              placeholder="0"
-              ${isComputed ? 'readonly' : ''}
-              title="${priceTooltip}"
-              aria-label="Ціна"
-              data-item-id="${item.id}"
-            />
-            <span class="list-item__unit">грн</span>
-          </div>
-
-          <!-- Time field -->
-          <div class="list-item__time-field">
-            <label class="list-item__field-label" for="time-${item.id}">час:</label>
-            <input
-              id="time-${item.id}"
-              type="number"
-              step="any"
-              class="${timeClass} js-item-time"
-              value="${timeValue}"
-              placeholder="0"
-              ${isComputed ? 'readonly' : ''}
-              title="${timeTooltip}"
-              aria-label="Час"
-              data-item-id="${item.id}"
-            />
-            <span class="list-item__unit">год</span>
-          </div>
+          ${separatorHtml}
+          ${priceHtml}
+          ${timeHtml}
 
           <!-- Item Actions as textual links -->
           <div class="list-item__actions">
@@ -281,8 +399,27 @@ export class UIRenderer {
   /**
    * Renders a nested list container with textual outline header and items
    */
-  renderNestedListHtml(nestedList, parentItemId) {
+  renderNestedListHtml(nestedList, parentItemId, activeFields) {
     const totals = calculateListTotals(nestedList);
+
+    const hasPrice = activeFields.includes('price');
+    const hasTime = activeFields.includes('time');
+    const hasCompleted = activeFields.includes('completed');
+
+    const parts = [];
+    if (hasCompleted) {
+      parts.push(`виконано <span class="totals-bar__value js-nested-completed">${totals.completedCount}/${totals.totalItemsCount}</span>`);
+    }
+    if (hasPrice) {
+      parts.push(`ціна <span class="totals-bar__value js-nested-price">${formatNumber(totals.totalPrice)}</span> грн`);
+    }
+    if (hasTime) {
+      parts.push(`час <span class="totals-bar__value js-nested-time">${formatNumber(totals.totalTime)}</span> год`);
+    }
+
+    const totalsSnippet = parts.length > 0
+      ? `— разом: ${parts.join(', ')}`
+      : '';
 
     return `
       <section class="nested-list-box" data-nested-list-id="${nestedList.id}" data-parent-item-id="${parentItemId}">
@@ -293,7 +430,7 @@ export class UIRenderer {
               ${this.escape(nestedList.title || 'Вкладений список')}
             </span>
             <span class="nested-list-header__totals">
-              — разом: ціна <span class="totals-bar__value js-nested-price">${formatNumber(totals.totalPrice)}</span> грн, час <span class="totals-bar__value js-nested-time">${formatNumber(totals.totalTime)}</span> год
+              ${totalsSnippet}
             </span>
           </div>
 
@@ -318,7 +455,7 @@ export class UIRenderer {
         </header>
 
         <div class="items-list" data-parent-list-id="${nestedList.id}">
-          ${this.renderItemsListHtml(nestedList.items, nestedList.id)}
+          ${this.renderItemsListHtml(nestedList.items, nestedList.id, activeFields)}
         </div>
       </section>
     `;
@@ -335,8 +472,11 @@ export class UIRenderer {
     const mainTotals = calculateListTotals(activeList);
     const mainPriceEl = this.root.querySelector('.list-header .js-total-price');
     const mainTimeEl = this.root.querySelector('.list-header .js-total-time');
+    const mainCompletedEl = this.root.querySelector('.list-header .js-total-completed');
+
     if (mainPriceEl) mainPriceEl.textContent = formatNumber(mainTotals.totalPrice);
     if (mainTimeEl) mainTimeEl.textContent = formatNumber(mainTotals.totalTime);
+    if (mainCompletedEl) mainCompletedEl.textContent = `${mainTotals.completedCount}/${mainTotals.totalItemsCount}`;
 
     // 2. Update all nested list header totals
     const nestedBoxes = this.root.querySelectorAll('.nested-list-box');
@@ -347,8 +487,10 @@ export class UIRenderer {
         const nTotals = calculateListTotals(nestedList);
         const pEl = box.querySelector('.js-nested-price');
         const tEl = box.querySelector('.js-nested-time');
+        const cEl = box.querySelector('.js-nested-completed');
         if (pEl) pEl.textContent = formatNumber(nTotals.totalPrice);
         if (tEl) tEl.textContent = formatNumber(nTotals.totalTime);
+        if (cEl) cEl.textContent = `${nTotals.completedCount}/${nTotals.totalItemsCount}`;
       }
     }
 
@@ -384,6 +526,9 @@ export class UIRenderer {
         }
       }
     }
+
+    // 5. Update checkboxes state (checked + indeterminate)
+    this.syncCheckboxesState();
   }
 
   /**
