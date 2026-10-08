@@ -74,6 +74,38 @@
 }
 
 /* ------------------------------------------------------------
+   1b. Language Switcher (Bilingual ua|en)
+   ------------------------------------------------------------ */
+.lang-switcher {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2xs);
+}
+
+.lang-switcher__btn {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-bottom: 1px dotted transparent;
+  cursor: pointer;
+  padding: 0 0.15em;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.lang-switcher__btn:hover {
+  color: var(--accent-color);
+  border-bottom-color: var(--accent-color);
+}
+
+.lang-switcher__btn--active {
+  color: var(--accent-color);
+  font-weight: 700;
+  border-bottom: 1px solid var(--accent-color);
+}
+
+/* ------------------------------------------------------------
    2. Lists Navigation (Textual Chapters / Index)
    ------------------------------------------------------------ */
 .tabs-list {

@@ -3,6 +3,7 @@
  */
 import { formatNumber } from './utils.js';
 import { calculateItemTotals, calculateListTotals, hasNestedLists } from './calculations.js';
+import { translator } from './i18n/index.js';
 
 export class UIRenderer {
   constructor(state, rootElement) {
@@ -81,8 +82,8 @@ export class UIRenderer {
 
     const { lists, activeListId } = this.state.data;
 
-    let html = '<div class="tabs-list" role="tablist" aria-label="Списки">';
-    html += '<span class="tabs-label">Списки:</span>';
+    let html = `<div class="tabs-list" role="tablist" aria-label="${translator.t('tabs.activeLabel')}">`;
+    html += `<span class="tabs-label">${translator.t('tabs.label')}</span>`;
     for (let i = 0; i < lists.length; i++) {
       const list = lists[i];
       const isActive = list.id === activeListId;
@@ -96,9 +97,9 @@ export class UIRenderer {
           class="tab-item ${isActive ? 'tab-item--active' : ''}"
           data-list-id="${list.id}"
           aria-selected="${isActive}"
-          title="${list.title || 'Список'}"
+          title="${list.title || translator.t('tabs.listTitle')}"
         >
-          <span class="tab-item__name">${this.escape(list.title || 'Новий список')}</span>
+          <span class="tab-item__name">${this.escape(list.title || translator.t('tabs.fallback'))}</span>
         </button>
       `;
     }
@@ -118,7 +119,7 @@ export class UIRenderer {
       if (list) {
         const nameSpan = tab.querySelector('.tab-item__name');
         if (nameSpan) {
-          nameSpan.textContent = list.title || 'Новий список';
+          nameSpan.textContent = list.title || translator.t('tabs.fallback');
         }
       }
     }
@@ -141,21 +142,21 @@ export class UIRenderer {
     // Build prose summary string for header totals
     const parts = [];
     if (hasCompleted) {
-      parts.push(`виконано <span class="totals-bar__value js-total-completed">${totals.completedCount}/${totals.totalItemsCount}</span>`);
+      parts.push(`${translator.t('total.completed')} <span class="totals-bar__value js-total-completed">${totals.completedCount}/${totals.totalItemsCount}</span>`);
     }
     if (hasPrice) {
-      parts.push(`ціна <span class="totals-bar__value js-total-price">${formatNumber(totals.totalPrice)}</span> грн`);
+      parts.push(`${translator.t('total.cost')} <span class="totals-bar__value js-total-price">${formatNumber(totals.totalPrice)}</span> ${translator.t('unit.cost')}`);
     }
     if (hasTime) {
-      parts.push(`час <span class="totals-bar__value js-total-time">${formatNumber(totals.totalTime)}</span> год`);
+      parts.push(`${translator.t('total.time')} <span class="totals-bar__value js-total-time">${formatNumber(totals.totalTime)}</span> ${translator.t('unit.time')}`);
     }
 
     const totalsSentence = parts.length > 0
-      ? `Разом у списку: ${parts.join(', ')}`
-      : `У списку: ${totals.totalItemsCount} елементів`;
+      ? `${translator.t('total.total')} ${parts.join(', ')}`
+      : translator.t('total.listPrefix', { count: totals.totalItemsCount });
 
     listView.innerHTML = `
-      <section class="list-view" aria-label="Поточний список">
+      <section class="list-view" aria-label="${translator.t('list.ariaLabel')}">
         <!-- List Header -->
         <header class="list-header">
           <div class="list-header__main-row">
@@ -164,48 +165,48 @@ export class UIRenderer {
                 type="text"
                 class="list-header__title-input js-list-title"
                 value="${this.escape(list.title || '')}"
-                placeholder="Без назви..."
-                aria-label="Назва списку"
+                placeholder="${translator.t('list.placeholder')}"
+                aria-label="${translator.t('list.ariaLabel')}"
                 data-list-id="${list.id}"
               />
             </div>
             <div class="list-header__actions">
-              <button type="button" class="btn btn--danger btn--icon-text js-btn-delete-list" data-list-id="${list.id}" title="Видалити цей список">
-                [× видалити список]
+              <button type="button" class="btn btn--danger btn--icon-text js-btn-delete-list" data-list-id="${list.id}" title="${translator.t('list.deleteTitle')}">
+                ${translator.t('list.deleteButton')}
               </button>
             </div>
           </div>
 
           <!-- Fields Configuration Row (Requirement 14) -->
           <div class="fields-config">
-            <span class="fields-config__label">Поля:</span>
-            <span class="fields-config__always">[зміст]</span>
+            <span class="fields-config__label">${translator.t('fields.config.label')}</span>
+            <span class="fields-config__always">${translator.t('fields.config.content')}</span>
             <button
               type="button"
               class="btn btn--field-toggle ${hasPrice ? 'btn--field-active' : ''} js-btn-toggle-field"
               data-list-id="${list.id}"
               data-field="price"
-              title="${hasPrice ? 'Прибрати поле вартості' : 'Додати поле вартості'}"
+              title="${hasPrice ? translator.t('fields.config.removeCost') : translator.t('fields.config.addCost')}"
             >
-              ${hasPrice ? '[вартість ✓]' : '[+ вартість]'}
+              ${hasPrice ? translator.t('fields.config.costActive') : translator.t('fields.config.costInactive')}
             </button>
             <button
               type="button"
               class="btn btn--field-toggle ${hasTime ? 'btn--field-active' : ''} js-btn-toggle-field"
               data-list-id="${list.id}"
               data-field="time"
-              title="${hasTime ? 'Прибрати поле часу' : 'Додати поле часу'}"
+              title="${hasTime ? translator.t('fields.config.removeTime') : translator.t('fields.config.addTime')}"
             >
-              ${hasTime ? '[час ✓]' : '[+ час]'}
+              ${hasTime ? translator.t('fields.config.timeActive') : translator.t('fields.config.timeInactive')}
             </button>
             <button
               type="button"
               class="btn btn--field-toggle ${hasCompleted ? 'btn--field-active' : ''} js-btn-toggle-field"
               data-list-id="${list.id}"
               data-field="completed"
-              title="${hasCompleted ? 'Прибрати поле виконано' : 'Додати поле виконано'}"
+              title="${hasCompleted ? translator.t('fields.config.removeCompleted') : translator.t('fields.config.addCompleted')}"
             >
-              ${hasCompleted ? '[виконано ✓]' : '[+ виконано]'}
+              ${hasCompleted ? translator.t('fields.config.completedActive') : translator.t('fields.config.completedInactive')}
             </button>
           </div>
 
@@ -223,7 +224,7 @@ export class UIRenderer {
         <!-- Add Item Button at list end -->
         <div class="list-add-row">
           <button type="button" class="btn btn--accent js-btn-add-item-end" data-parent-list-id="${list.id}">
-            + додати елемент
+            ${translator.t('item.add')}
           </button>
         </div>
       </section>
@@ -259,20 +260,20 @@ export class UIRenderer {
     const priceClass = isComputed ? 'input-underlined input-underlined--number input-underlined--computed' : 'input-underlined input-underlined--number';
     const timeClass = isComputed ? 'input-underlined input-underlined--number input-underlined--computed' : 'input-underlined input-underlined--number';
 
-    const priceTooltip = isComputed ? 'Розраховано автоматично з вкладених елементів' : 'Ціна';
-    const timeTooltip = isComputed ? 'Розраховано автоматично з вкладених елементів' : 'Час';
+    const priceTooltip = isComputed ? translator.t('total.computedTooltip') : translator.t('total.costAria');
+    const timeTooltip = isComputed ? translator.t('total.computedTooltip') : translator.t('total.timeAria');
 
     // 1. Checkbox field (if enabled)
     let completedHtml = '';
     if (hasCompleted) {
       completedHtml = `
-        <label class="list-item__completed-field" title="${isComputed ? 'Статус виконання вкладених підсписків' : 'Позначити як виконано'}">
+        <label class="list-item__completed-field" title="${isComputed ? translator.t('total.completedTooltip') : translator.t('total.completedTitle')}">
           <input
             type="checkbox"
             class="checkbox-text js-item-completed"
             data-item-id="${item.id}"
             ${itemTotals.completed ? 'checked' : ''}
-            aria-label="Виконано"
+            aria-label="${translator.t('total.completedAria')}"
           />
         </label>
       `;
@@ -283,7 +284,7 @@ export class UIRenderer {
     if (hasPrice) {
       priceHtml = `
         <div class="list-item__price-field">
-          <label class="list-item__field-label" for="price-${item.id}">ціна:</label>
+          <label class="list-item__field-label" for="price-${item.id}">${translator.t('field.costLabel')}:</label>
           <input
             id="price-${item.id}"
             type="number"
@@ -293,10 +294,10 @@ export class UIRenderer {
             placeholder="0"
             ${isComputed ? 'readonly' : ''}
             title="${priceTooltip}"
-            aria-label="Ціна"
+            aria-label="${translator.t('total.costAria')}"
             data-item-id="${item.id}"
           />
-          <span class="list-item__unit">грн</span>
+          <span class="list-item__unit">${translator.t('unit.cost')}</span>
         </div>
       `;
     }
@@ -306,7 +307,7 @@ export class UIRenderer {
     if (hasTime) {
       timeHtml = `
         <div class="list-item__time-field">
-          <label class="list-item__field-label" for="time-${item.id}">час:</label>
+          <label class="list-item__field-label" for="time-${item.id}">${translator.t('field.timeLabel')}:</label>
           <input
             id="time-${item.id}"
             type="number"
@@ -316,17 +317,17 @@ export class UIRenderer {
             placeholder="0"
             ${isComputed ? 'readonly' : ''}
             title="${timeTooltip}"
-            aria-label="Час"
+            aria-label="${translator.t('total.timeAria')}"
             data-item-id="${item.id}"
           />
-          <span class="list-item__unit">год</span>
+          <span class="list-item__unit">${translator.t('unit.time')}</span>
         </div>
       `;
     }
 
     // 4. Separator if numbers follow
     const separatorHtml = (hasPrice || hasTime)
-      ? '<span class="list-item__sep" aria-hidden="true">—</span>'
+      ? `<span class="list-item__sep" aria-hidden="true">${translator.t('separator')}</span>`
       : '';
 
     // 5. Nested lists
@@ -351,8 +352,8 @@ export class UIRenderer {
               type="text"
               class="input-underlined js-item-content"
               value="${this.escape(item.content || '')}"
-              placeholder="введіть зміст..."
-              aria-label="Зміст елемента"
+              placeholder="${translator.t('item.contentPlaceholder')}"
+              aria-label="${translator.t('item.contentAriaLabel')}"
               data-item-id="${item.id}"
             />
           </div>
@@ -368,25 +369,25 @@ export class UIRenderer {
               class="btn btn--icon-text js-btn-add-item-after"
               data-item-id="${item.id}"
               data-parent-list-id="${parentListId}"
-              title="Додати елемент після цього (Enter)"
+              title="${translator.t('item.addAfterTitle')}"
             >
-              [+ рядок]
+              ${translator.t('item.addAfter')}
             </button>
             <button
               type="button"
               class="btn btn--icon-text js-btn-add-nested"
               data-item-id="${item.id}"
-              title="Додати вкладений список (Ctrl+Enter)"
+              title="${translator.t('item.nestedTitle')}"
             >
-              [+ підсписок]
+              ${translator.t('item.nested')}
             </button>
             <button
               type="button"
               class="btn btn--icon-text btn--danger js-btn-delete-item"
               data-item-id="${item.id}"
-              title="Видалити цей елемент"
+              title="${translator.t('item.deleteTitle')}"
             >
-              [×]
+              ${translator.t('item.delete')}
             </button>
           </div>
         </div>
@@ -408,17 +409,17 @@ export class UIRenderer {
 
     const parts = [];
     if (hasCompleted) {
-      parts.push(`виконано <span class="totals-bar__value js-nested-completed">${totals.completedCount}/${totals.totalItemsCount}</span>`);
+      parts.push(`${translator.t('total.completed')} <span class="totals-bar__value js-nested-completed">${totals.completedCount}/${totals.totalItemsCount}</span>`);
     }
     if (hasPrice) {
-      parts.push(`ціна <span class="totals-bar__value js-nested-price">${formatNumber(totals.totalPrice)}</span> грн`);
+      parts.push(`${translator.t('total.cost')} <span class="totals-bar__value js-nested-price">${formatNumber(totals.totalPrice)}</span> ${translator.t('unit.cost')}`);
     }
     if (hasTime) {
-      parts.push(`час <span class="totals-bar__value js-nested-time">${formatNumber(totals.totalTime)}</span> год`);
+      parts.push(`${translator.t('total.time')} <span class="totals-bar__value js-nested-time">${formatNumber(totals.totalTime)}</span> ${translator.t('unit.time')}`);
     }
 
     const totalsSnippet = parts.length > 0
-      ? `— разом: ${parts.join(', ')}`
+      ? `${translator.t('total.nestedPrefix')}${parts.join(', ')}`
       : '';
 
     return `
@@ -427,7 +428,7 @@ export class UIRenderer {
           <div class="nested-list-header__info">
             <span class="nested-list-header__marker" aria-hidden="true">↳</span>
             <span class="nested-list-header__title">
-              ${this.escape(nestedList.title || 'Вкладений список')}
+              ${this.escape(nestedList.title || translator.t('nested.title'))}
             </span>
             <span class="nested-list-header__totals">
               ${totalsSnippet}
@@ -439,17 +440,17 @@ export class UIRenderer {
               type="button"
               class="btn btn--icon-text js-btn-add-item-end"
               data-parent-list-id="${nestedList.id}"
-              title="Додати елемент у цей підсписок"
+              title="${translator.t('item.addNestedButtonTitle')}"
             >
-              [+ додати в підсписок]
+              ${translator.t('item.addNestedButton')}
             </button>
             <button
               type="button"
               class="btn btn--icon-text btn--danger js-btn-delete-nested-list"
               data-nested-list-id="${nestedList.id}"
-              title="Видалити весь підсписок"
+              title="${translator.t('item.deleteNestedButtonTitle')}"
             >
-              [× видалити підсписок]
+              ${translator.t('item.deleteNestedButton')}
             </button>
           </div>
         </header>
@@ -522,7 +523,7 @@ export class UIRenderer {
       if (ctx) {
         const titleEl = box.querySelector('.nested-list-header__title');
         if (titleEl) {
-          titleEl.textContent = ctx.item.content || 'Вкладений список';
+          titleEl.textContent = ctx.item.content || translator.t('nested.title');
         }
       }
     }

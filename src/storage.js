@@ -2,6 +2,7 @@
  * Storage and import/export utilities
  */
 import { generateId } from './utils.js';
+import { translator } from './i18n/index.js';
 
 export const STORAGE_KEY = 'lister_data_v1';
 
@@ -60,7 +61,7 @@ export function exportListAsJson(list) {
     URL.revokeObjectURL(url);
   } catch (error) {
     console.error('Failed to export list to JSON:', error);
-    alert('Не вдалося експортувати список: ' + error.message);
+    alert(translator.t('actions.exportError') + error.message);
   }
 }
 
@@ -97,7 +98,7 @@ export function sanitizeImportedList(list) {
 
   return {
     id: generateId(),
-    title: typeof list.title === 'string' && list.title.trim() ? list.title : 'Імпортований список',
+    title: typeof list.title === 'string' && list.title.trim() ? list.title : translator.t('actions.importedList'),
     fields,
     items: Array.isArray(list.items) ? list.items.map(sanitizeItem) : []
   };
@@ -111,7 +112,7 @@ export function sanitizeImportedList(list) {
 export async function readJsonFile(file) {
   return new Promise((resolve, reject) => {
     if (!file) {
-      reject(new Error('Файл не вибрано'));
+      reject(new Error(translator.t('actions.fileNotSelected')));
       return;
     }
 
@@ -120,7 +121,7 @@ export async function readJsonFile(file) {
       try {
         const parsed = JSON.parse(event.target.result);
         if (!parsed || (typeof parsed !== 'object')) {
-          throw new Error('Недійсний формат файлу JSON');
+          throw new Error(translator.t('actions.invalidJsonFormat'));
         }
 
         // Handle if file contains a single list or an array of lists or whole state
@@ -130,13 +131,13 @@ export async function readJsonFile(file) {
           // If a whole backup was uploaded, take first
           resolve(sanitizeImportedList(parsed.lists[0]));
         } else {
-          throw new Error('Файл не містить валідної структури списку (items)');
+          throw new Error(translator.t('actions.noValidListStructure'));
         }
       } catch (err) {
         reject(err);
       }
     };
-    reader.onerror = () => reject(new Error('Помилка читання файлу'));
+    reader.onerror = () => reject(new Error(translator.t('actions.fileReadError')));
     reader.readAsText(file, 'utf-8');
   });
 }

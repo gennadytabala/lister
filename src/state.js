@@ -4,6 +4,7 @@
 import { generateId } from './utils.js';
 import { loadData, saveData } from './storage.js';
 import { hasNestedLists, calculateItemTotals } from './calculations.js';
+import { translator } from './i18n/index.js';
 
 export const ALLOWED_FIELDS = ['price', 'time', 'completed'];
 
@@ -399,7 +400,7 @@ export class AppState {
     const firstNestedItemId = generateId();
     const nestedList = {
       id: generateId(),
-      title: ctx.item.content || 'Вкладений список',
+      title: ctx.item.content || translator.t('nested.title'),
       items: [
         {
           id: firstNestedItemId,

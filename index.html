@@ -1,17 +1,27 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Lister — швидкий та мінімалістичний інструмент для створення списків з підрахунком цін, часу та вкладеними підсписками." />
-  <title>Lister — Мінімалістичний менеджер списків</title>
+  <meta name="description" content="Lister — a fast, minimalist tool for creating lists with cost and time totals, and nested sublists." />
+  <title>Lister</title>
 
-  <!-- Apply saved theme immediately to prevent flash of wrong theme -->
+  <!-- Apply saved theme and locale immediately to prevent flash -->
   <script>
     (function () {
-      const saved = localStorage.getItem('lister_theme') || 'system';
-      if (saved === 'light' || saved === 'dark') {
-        document.documentElement.setAttribute('data-theme', saved);
+      // Theme
+      const savedTheme = localStorage.getItem('lister_theme') || 'system';
+      if (savedTheme === 'light' || savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+
+      // Locale
+      const savedLocale = localStorage.getItem('lister-locale');
+      if (savedLocale === 'uk' || savedLocale === 'en') {
+        document.documentElement.lang = savedLocale;
+      } else {
+        const sysLang = navigator.language || 'en';
+        document.documentElement.lang = sysLang.startsWith('uk') ? 'uk' : 'en';
       }
     })();
   </script>
@@ -29,31 +39,37 @@
       <div class="app-header__top">
         <div class="app-header__brand">
           <h1 class="app-header__title">lister</h1>
-          <span class="app-header__subtitle">мінімалістичні списки</span>
+          <span class="app-header__subtitle" data-i18n="app.subtitle">minimalist lists</span>
         </div>
 
         <div class="app-header__global-actions">
-          <button type="button" id="btn-create-list" class="btn btn--accent" title="Створити новий список">
-            + список
+          <button type="button" id="btn-create-list" class="btn btn--accent" title="Create new list">
+            + list
           </button>
           <span class="sep" aria-hidden="true">·</span>
-          <button type="button" id="btn-export-json" class="btn" title="Експортувати активний список у JSON">
-            експорт
+          <button type="button" id="btn-export-json" class="btn" title="Export active list to JSON">
+            export
           </button>
           <span class="sep" aria-hidden="true">·</span>
-          <button type="button" id="btn-import-json" class="btn" title="Завантажити список із JSON файлу">
-            імпорт
+          <button type="button" id="btn-import-json" class="btn" title="Import list from JSON file">
+            import
           </button>
           <span class="sep" aria-hidden="true">·</span>
-          <button type="button" id="btn-theme" class="btn btn--theme" title="Перемкнути тему" aria-label="Перемкнути тему">
+          <button type="button" id="btn-theme" class="btn btn--theme" title="Toggle theme" aria-label="Toggle theme">
             ◑ system
           </button>
-          <input type="file" id="file-import-input" class="hidden-file-input" accept=".json" aria-label="Завантажити JSON файл" />
+          <span class="sep" aria-hidden="true">·</span>
+          <div class="lang-switcher" role="group" aria-label="Language">
+            <button type="button" class="lang-switcher__btn" data-locale="uk" title="Ukrainian">ua</button>
+            <span class="sep" aria-hidden="true">·</span>
+            <button type="button" class="lang-switcher__btn" data-locale="en" title="English">en</button>
+          </div>
+          <input type="file" id="file-import-input" class="hidden-file-input" accept=".json" aria-label="Upload JSON file" />
         </div>
       </div>
 
       <!-- Lists Navigation Tabs -->
-      <nav class="tabs-nav js-tabs-container" aria-label="Вкладки списків">
+      <nav class="tabs-nav js-tabs-container" aria-label="Lists">
         <!-- Generated dynamically via JS -->
       </nav>
     </header>
@@ -66,11 +82,11 @@
     <!-- Application Footer / Shortcuts -->
     <footer class="app-footer">
       <div class="app-footer__shortcuts">
-        <span><kbd>Enter</kbd> — новий рядок</span>
-        <span><kbd>Ctrl+Enter</kbd> — вкладений список</span>
+        <span><kbd>Enter</kbd> — new row</span>
+        <span><kbd>Ctrl+Enter</kbd> — nested list</span>
       </div>
       <div class="app-footer__status">
-        <span>Зберігається автоматично у браузері</span>
+        <span>Saved automatically in browser</span>
       </div>
     </footer>
   </div>

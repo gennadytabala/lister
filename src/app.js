@@ -6,10 +6,14 @@ import { UIRenderer } from './render.js';
 import { exportListAsJson, readJsonFile } from './storage.js';
 import { parseNumber } from './utils.js';
 import { initThemeToggle } from './theme.js';
+import { translator } from './i18n/index.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const root = document.getElementById('app');
   if (!root) return;
+
+  // Initialize translator
+  translator.init();
 
   const state = new AppState();
   const renderer = new UIRenderer(state, root);
@@ -25,6 +29,12 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       renderer.renderFull(options);
     }
+  });
+
+  // Subscribe to locale changes
+  translator.onLocaleChange(() => {
+    updateLanguageSwitcher();
+    renderer.renderFull();
   });
 
   // Initial Full Render
@@ -45,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnCreateList = document.getElementById('btn-create-list');
   if (btnCreateList) {
     btnCreateList.addEventListener('click', () => {
-      state.createList('Новий список');
+      state.createList(translator.t('list.new'));
     });
   }
 
@@ -77,10 +87,37 @@ document.addEventListener('DOMContentLoaded', () => {
         const importedList = await readJsonFile(file);
         state.importList(importedList);
       } catch (err) {
-        alert('Помилка імпорту JSON: ' + err.message);
+        alert(translator.t('actions.importError') + err.message);
       }
     });
   }
+
+  // Language switcher
+  const langSwitcher = root.querySelector('.lang-switcher');
+  if (langSwitcher) {
+    langSwitcher.addEventListener('click', (event) => {
+      const btn = event.target.closest('.lang-switcher__btn');
+      if (btn && btn.dataset.locale) {
+        translator.setLocale(btn.dataset.locale);
+      }
+    });
+  }
+
+  function updateLanguageSwitcher() {
+    if (!langSwitcher) return;
+    const buttons = langSwitcher.querySelectorAll('.lang-switcher__btn');
+    const currentLocale = translator.getLocale();
+    for (const btn of buttons) {
+      if (btn.dataset.locale === currentLocale) {
+        btn.classList.add('lang-switcher__btn--active');
+      } else {
+        btn.classList.remove('lang-switcher__btn--active');
+      }
+    }
+  }
+
+  // Initialize language switcher (after langSwitcher is declared to avoid TDZ)
+  updateLanguageSwitcher();
 
   // --- EVENT DELEGATION ON ROOT ---
 
@@ -105,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Delete list
     const btnDeleteList = target.closest('.js-btn-delete-list');
     if (btnDeleteList && btnDeleteList.dataset.listId) {
-      const confirmed = window.confirm('Ви впевнені, що хочете видалити цей список?');
+      const confirmed = window.confirm(translator.t('list.deleteConfirm'));
       if (confirmed) {
         state.deleteList(btnDeleteList.dataset.listId);
       }
@@ -143,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Delete nested list
     const btnDeleteNestedList = target.closest('.js-btn-delete-nested-list');
     if (btnDeleteNestedList && btnDeleteNestedList.dataset.nestedListId) {
-      const confirmed = window.confirm('Ви впевнені, що хочете видалити весь цей вкладений список?');
+      const confirmed = window.confirm(translator.t('item.deleteNestedConfirm'));
       if (confirmed) {
         state.deleteNestedList(btnDeleteNestedList.dataset.nestedListId);
       }
